@@ -442,7 +442,7 @@ public :
 		cv::Mat cvImg( img_ir.size(), CV_8UC3 );
 		int num = img_ir.size().area();
 		for ( int i = 0; i < num; i++ ) {
-			unsigned char c = EPH_Math::Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
+			unsigned char c = Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
 			cvImg.ptr()[ i * 3 + 0 ] = c;
 			cvImg.ptr()[ i * 3 + 1 ] = c;
 			cvImg.ptr()[ i * 3 + 2 ] = c;
