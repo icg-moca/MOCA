@@ -117,4 +117,9 @@ cv::Mat QuatToMat( T x, T y, T z, T w ) {
 	return m;
 }
 
+template< class T >
+T Clamp( T v, T bmin, T bmax ) {
+	return ( v <= bmin ? bmin : ( v >= bmax : bmax : v ) );
+}
+
 #endif // Moc_cv_op_h
