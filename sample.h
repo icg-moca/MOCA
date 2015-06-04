@@ -9,7 +9,7 @@
 #define Moc_sample_h
 
 #include "camera_calibration.h"
-#include "vicon_track.h"
+#include "vicon_tracker.h"
 #include "freenect.h"
 #include "fusion.h"
 
