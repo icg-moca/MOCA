@@ -15,8 +15,8 @@
 
 void sample_main_vicon_track( void ) {
 	VRPN_Tracker vrpn_pattern, vrpn_kinect;
-	vrpn_pattern.Create( "PATTERNLARGE@192.168.1.3" );
-	vrpn_kinect.Create( "KINECT@192.168.1.3" );
+	vrpn_pattern.Create( "PATTERNLARGE@192.168.1.136" );
+	vrpn_kinect.Create( "KINECT@192.168.1.136" );
 
 	while( 1 ) {
 		// update vrpn
@@ -51,8 +51,8 @@ void sample_main_calibrate_vicon_kinect( void ) {
 	// Vicon
 	//=====================
 	VRPN_Tracker vrpn_pattern, vrpn_kinect;
-	vrpn_pattern.Create( "PATTERNLARGE@192.168.1.3" );
-	vrpn_kinect.Create( "KINECT@192.168.1.3" );
+	vrpn_pattern.Create( "PATTERNLARGE@192.168.1.136" );
+	vrpn_kinect.Create( "KINECT@192.168.1.136" );
 
 	//=====================
 	// Kinect
