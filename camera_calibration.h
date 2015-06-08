@@ -227,6 +227,8 @@ double CalibrateTransformFromKinectToCamera(
 	vector< cv::Point3f > corners;
 	CalcChessboardCornersFromMarkers( markers, boardSize, corners );
 
+	//CalcChessboardCornersFromSquare( boardSize, 0.0655, corners );
+
 	double minErr = -1.0;
 	for ( int i = 0; i < imgPoints.size(); i++ ) {
 		RigidTransform m;
@@ -236,6 +238,7 @@ double CalibrateTransformFromKinectToCamera(
 				minErr = err;
 				extr = m.Mat() * ( mats_p_to_w[i].inv() * mats_k_to_w[i] );
 			}
+			printf( "error : %d : %f\n", i, err );
 		}
 	}
 
@@ -310,7 +313,7 @@ public :
 		cv::Mat cvImg( img_ir.size(), CV_8UC3 );
 		int num = img_ir.size().area();
 		for ( int i = 0; i < num; i++ ) {
-			unsigned char c = EPH_Math::Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
+			unsigned char c = Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
 			cvImg.ptr()[ i * 3 + 0 ] = c;
 			cvImg.ptr()[ i * 3 + 1 ] = c;
 			cvImg.ptr()[ i * 3 + 2 ] = c;
@@ -442,7 +445,7 @@ public :
 		cv::Mat cvImg( img_ir.size(), CV_8UC3 );
 		int num = img_ir.size().area();
 		for ( int i = 0; i < num; i++ ) {
-			unsigned char c = EPH_Math::Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
+			unsigned char c = Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
 			cvImg.ptr()[ i * 3 + 0 ] = c;
 			cvImg.ptr()[ i * 3 + 1 ] = c;
 			cvImg.ptr()[ i * 3 + 2 ] = c;
