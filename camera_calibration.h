@@ -73,7 +73,7 @@ public :
 };
 
 double ReprojectionError(
-	const vector< cv::Point3d > &objectPoints,
+	const vector< cv::Point3f > &objectPoints,
 	const vector< cv::Point2f > &imagePoints,
 	const CameraIntrinsic &intr, const RigidTransform &extr
 ) {
@@ -92,30 +92,30 @@ void UndistortImage( const cv::Mat &src, cv::Mat &dst, const CameraIntrinsic &in
 	cv::remap( src, dst, intr.undistMap[0], intr.undistMap[1], cv::INTER_LINEAR );
 }
 
-void CalcChessboardCornersFromSquare( cv::Size boardSize, float squareSize, vector< cv::Point3d > &corners ) {
+void CalcChessboardCornersFromSquare( cv::Size boardSize, float squareSize, vector< cv::Point3f > &corners ) {
 	corners.clear();
 	corners.reserve( boardSize.area() );
 	for( int y = 0; y < boardSize.height; y++ ) {
 		for( int x = 0; x < boardSize.width; x++ ) {
-			corners.push_back( cv::Point3d( x * squareSize, y * squareSize, 0 ) );
+			corners.push_back( cv::Point3f( x * squareSize, y * squareSize, 0 ) );
 		}
 	}
 }
 
 // corners
-// 2 --- 3
+// 1 --- 2
 // |     |
-// 0 --- 1
-void CalcChessboardCornersFromMarkers( const vector< cv::Point3d > &markers, cv::Size boardSize, vector< cv::Point3d > &corners ) {
+// 0 --- 3
+void CalcChessboardCornersFromMarkers( const vector< cv::Point3f > &markers, cv::Size boardSize, vector< cv::Point3f > &corners ) {
 	corners.clear();
 	corners.reserve( boardSize.area() );
 	for( int y = boardSize.height; y >= 1 ; y-- ) {
 		float fy = ( float )y / ( float )( boardSize.height + 1 );
 		for( int x = 1; x <= boardSize.width; x++ ) {
 			float fx = ( float )x / ( float )( boardSize.width + 1 );
-			cv::Point3d e0 = ( markers[2] - markers[3] ) * ( double )fx + markers[3];
-			cv::Point3d e1 = ( markers[1] - markers[0] ) * ( double )fx + markers[0];
-			cv::Point3d e  = ( e1 - e0 ) * ( double )fy + e0;
+			cv::Point3f e0 = ( markers[3] - markers[0] ) * ( double )fx + markers[0];
+			cv::Point3f e1 = ( markers[2] - markers[1] ) * ( double )fx + markers[1];
+			cv::Point3f e  = ( e1 - e0 ) * ( double )fy + e0;
 			corners.push_back( e );
 		}
 	}
@@ -151,7 +151,7 @@ void CalibrateCameraWithChessboard(
 	}
 
 	// object points from squares
-	vector< vector< cv::Point3d > > objPoints;
+	vector< vector< cv::Point3f > > objPoints;
 	objPoints.resize( imgPoints.size() );
 
 	CalcChessboardCornersFromSquare( boardSize, squareSize, objPoints[ 0 ] );
@@ -188,11 +188,11 @@ void CalibrateCameraWithChessboard(
 }
 
 // overflow
-void PairPointsRigidRegistration( const vector< cv::Point3d > &src, const vector< cv::Point3d > &dst, cv::Mat &M ) {
-	cv::Point3d src_o = Sum( src ) / (double)src.size();
-	cv::Point3d dst_o = Sum( dst ) / (double)dst.size();
+void PairPointsRigidRegistration( const vector< cv::Point3f > &src, const vector< cv::Point3f > &dst, cv::Mat &M ) {
+	cv::Point3f src_o = Sum( src ) / (float)src.size();
+	cv::Point3f dst_o = Sum( dst ) / (float)dst.size();
 
-	double s = 1;
+	float s = 1;
 	for ( int i = 0; i < src.size(); i++ ) {
 		double d = Length( src[ i ] - src_o );
 		if ( s < d ) {
@@ -209,7 +209,7 @@ void PairPointsRigidRegistration( const vector< cv::Point3d > &src, const vector
 	cv::SVDecomp( H, W, U, V, cv::SVD::FULL_UV );
 
 	cv::Mat R = ( U * V ).t();
-	cv::Point3d T = dst_o - R * src_o;
+	cv::Point3f T = dst_o - R * src_o;
 
 	M = TranslateRotate( T, R );
 
@@ -221,10 +221,10 @@ void PairPointsRigidRegistration( const vector< cv::Point3d > &src, const vector
 // P(img<-camera) * M(camera<-kinect) * M(kinect<-vicon) * M(vicon<-pat) * V(pat) = V(img)
 // M(camera<-kinect) = M(camera<-pat) * M(pat<-vicon) * M(vicon<-kinect)
 double CalibrateTransformFromKinectToCamera(
-	const vector< vector< cv::Point2f > > &imgPoints, const vector< cv::Mat > &mats_p_to_w, const vector< cv::Mat > &mats_k_to_w, const vector< cv::Point3d > &markers, cv::Size boardSize, const CameraIntrinsic &intr, cv::Mat &extr
+	const vector< vector< cv::Point2f > > &imgPoints, const vector< cv::Mat > &mats_p_to_w, const vector< cv::Mat > &mats_k_to_w, const vector< cv::Point3f > &markers, cv::Size boardSize, const CameraIntrinsic &intr, cv::Mat &extr
 ) {
 	// object points from markers
-	vector< cv::Point3d > corners;
+	vector< cv::Point3f > corners;
 	CalcChessboardCornersFromMarkers( markers, boardSize, corners );
 
 	double minErr = -1.0;
@@ -243,7 +243,7 @@ double CalibrateTransformFromKinectToCamera(
 }
 
 bool EstimatePoseWithChessboard(
-	const vector< cv::Point3d > &objectPoints, const cv::Mat &image,
+	const vector< cv::Point3f > &objectPoints, const cv::Mat &image,
 	cv::Size boardSize, const CameraIntrinsic &intr, RigidTransform &extr
 ) {
 	vector< cv::Point2f > imagePoints;
@@ -253,8 +253,8 @@ bool EstimatePoseWithChessboard(
 	return cv::solvePnP( cv::Mat( objectPoints ), cv::Mat( imagePoints ), intr.cameraMatrix, intr.distCoef, extr.rvec, extr.tvec, false );
 }
 
-void ProjectPoints( const vector<cv::Point3d> &objPoints, const CameraIntrinsic &intr, const cv::Mat &extr, vector<cv::Point2f> &imgPoints ) {
-	vector< cv::Point3d > points( objPoints.size() );
+void ProjectPoints( const vector<cv::Point3f> &objPoints, const CameraIntrinsic &intr, const cv::Mat &extr, vector<cv::Point2f> &imgPoints ) {
+	vector< cv::Point3f > points( objPoints.size() );
 	for ( int i = 0; i < objPoints.size(); i++ ) {
 		points[i] = extr * objPoints[i];
 	}
@@ -269,8 +269,8 @@ public :
 	// board
 	cv::Size							board_size;
 	float								board_square_size;
-	vector< cv::Point3d >				board_markers;
-	vector< cv::Point3d >				board_corners;
+	vector< cv::Point3f >				board_markers;
+	vector< cv::Point3f >				board_corners;
 	cv::Size							img_size;
 
 	// frames for calibration
@@ -290,7 +290,7 @@ public :
 		cam_extr = cv::Mat::eye( 4, 4, CV_64F );
 	}
 
-	void SetChessboard( cv::Size size, float square_size, const vector< cv::Point3d > &markers ) {
+	void SetChessboard( cv::Size size, float square_size, const vector< cv::Point3f > &markers ) {
 		board_size = size;
 		board_square_size = square_size;
 		board_markers = markers;
@@ -310,7 +310,7 @@ public :
 		cv::Mat cvImg( img_ir.size(), CV_8UC3 );
 		int num = img_ir.size().area();
 		for ( int i = 0; i < num; i++ ) {
-			unsigned char c = Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
+			unsigned char c = EPH_Math::Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
 			cvImg.ptr()[ i * 3 + 0 ] = c;
 			cvImg.ptr()[ i * 3 + 1 ] = c;
 			cvImg.ptr()[ i * 3 + 2 ] = c;
@@ -442,7 +442,7 @@ public :
 		cv::Mat cvImg( img_ir.size(), CV_8UC3 );
 		int num = img_ir.size().area();
 		for ( int i = 0; i < num; i++ ) {
-			unsigned char c = Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
+			unsigned char c = EPH_Math::Clamp( ((float*)img_ir.ptr())[ i ] / 20.0f, 0.0f, 255.0f );
 			cvImg.ptr()[ i * 3 + 0 ] = c;
 			cvImg.ptr()[ i * 3 + 1 ] = c;
 			cvImg.ptr()[ i * 3 + 2 ] = c;
