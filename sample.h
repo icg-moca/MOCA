@@ -8,8 +8,8 @@
 #ifndef Moc_sample_h
 #define Moc_sample_h
 
-#include "cameraCalibration.h"
-#include "viconTrack.h"
+#include "camera_calibration.h"
+#include "vicon_tracker.h"
 #include "freenect.h"
 #include "fusion.h"
 
