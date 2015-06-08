@@ -84,14 +84,15 @@ void sample_main_calibrate_vicon_kinect( void ) {
 		// update kinect
 		kinect.Loop();
 		cv::imshow( "ir", kinect.img_ir / 2000.0f );
+		int key = cv::waitKey(1);
 
 		// capture new frame
-		if ( getchar() == 'F' ) {
+		if ( key == 'F' ) {
 			cali.CaptureFrame( kinect.img_ir, vrpn_pattern.Mat(), vrpn_kinect.Mat() );
 		}
 
 		// calibrate kinect and save config
-		if ( getchar() == 'C' ) {
+		if ( key == 'C' ) {
 			cali.Calibrate();
 			cali.SaveCali( "cam_cali.txt" );
 			break;
