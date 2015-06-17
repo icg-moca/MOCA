@@ -118,6 +118,17 @@ cv::Mat QuatToMat( T x, T y, T z, T w ) {
 }
 
 template< class T >
+void MatToVec( const cv::Mat &m, vector<T> &v ) {
+	int num = m.size().area();
+
+	v.clear();
+	v.resize( num );
+	for ( int i = 0; i < num; i++ ) {
+		v[ i ] = ((double*)m.ptr())[ i ];
+	}
+}
+
+template< class T >
 T Clamp( T v, T bmin, T bmax ) {
 	return ( v <= bmin ? bmin : ( v >= bmax ? bmax : v ) );
 }
