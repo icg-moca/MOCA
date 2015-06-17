@@ -9,9 +9,13 @@
 #ifndef __EPH_CL__
 #define __EPH_CL__
 
+#include <stdio.h>
+#include <vector>
+using namespace std;
+
 #ifdef __APPLE__
-#define CL_USE_DEPRECATED_OPENCL_1_0_APIS
-#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
+//#define CL_USE_DEPRECATED_OPENCL_1_0_APIS
+//#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
 #include <opencl/cl.h>
 #include <opencl/cl_platform.h>
 #include <opencl/cl_gl.h>
@@ -20,8 +24,8 @@
 #endif
 
 #ifdef _WIN32
-#define CL_USE_DEPRECATED_OPENCL_1_0_APIS
-#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
+//#define CL_USE_DEPRECATED_OPENCL_1_0_APIS
+//#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
 #include <cl/cl.h>
 #include <cl/cl_platform.h>
 #include <cl/cl_gl.h>
@@ -458,6 +462,7 @@ namespace cl {
 
 			props.push_back( (cl_context_properties)CL_CONTEXT_PLATFORM ); props.push_back( (cl_context_properties)platform.ID() ); // render context
 
+#if 0
 			if ( support & SUPPORT_CL_GL_INTEROP ) {
 #ifdef _WIN32
 				ext.push_back( "cl_khr_gl_sharing" );
@@ -472,6 +477,8 @@ namespace cl {
 				props.push_back( (cl_context_properties)CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE); props.push_back( (cl_context_properties)kCGLShareGroup ); // device context#endif
 #endif
 			};
+
+#endif
 
 			ext.push_back( 0 ); // FIXME
 			props.push_back( 0 ); // FIXME
@@ -849,6 +856,5 @@ namespace cl {
 	};
 	
 } // CL
-
 
 #endif

@@ -56,4 +56,8 @@ void sample_cl_main( void ) {
 	for ( int i = 0; i < 9; i++ ) {
 		printf( "%f\n", host_dst[ i ] );
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/master
