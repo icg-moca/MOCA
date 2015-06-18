@@ -1,9 +1,0 @@
-libusbx post-1.0.17 + winiso
-winiso = Windows isochronous modifications by Joshua Blake <joshblake@gmail.com>
-
-Compiled with VS2013 (v120 runtime), 64-bit Debug.
-
-Alpha! Once tested and working, will pull request upstream.
-
-Source available from github, winiso branch
-https://github.com/JoshBlake/libusbx/tree/winiso
