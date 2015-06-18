@@ -1,6 +1,7 @@
+#include <fusion.h>
 void LoadFrame( int index, cv::Mat &kinect_mat, cv::Mat &depth ) {
 	char path[ 256 ];
-	sprintf( path, "frame%d.raw", index );
+	sprintf( path, "data/frame%d.raw", index );
 
 	FILE *fp = fopen( path, "rb" );
 	if ( !fp ) {
@@ -50,10 +51,10 @@ void sample_cl_main() {
 	// fusion setup
 	Fusion fusion;
 	fusion.image_size = cl::int2( 512, 424 );
-	fusion.volume_size = cl::int3( 256 );
+	fusion.volume_size = cl::int4( 256 );
 
-	fusion.bound[0] = cl::float3( -1.28, 0.00 - 0.5, -1.28 );
-	fusion.bound[1] = cl::float3( +1.28, 2.56 - 0.5, +1.28 );
+	fusion.bound[0] = cl::float4( -1.28, 0.00 - 0.5, -1.28, 0 );
+	fusion.bound[1] = cl::float4( +1.28, 2.56 - 0.5, +1.28, 0 );
 
 	fusion.global_size2 = 512;
 	fusion.local_size2 = 4;
@@ -70,7 +71,8 @@ void sample_cl_main() {
 
 	// fuse frame
 	cv::Mat depth_map;
-	cv::Mat kinect_mat;	fusion.Clear();
+	cv::Mat kinect_mat;
+	fusion.Clear();
 	for ( int i = 75; i < 80; i++ ){
 		LoadFrame( i, kinect_mat, depth_map );
 		// fusion.ICP( kinect_mat );
@@ -80,9 +82,9 @@ void sample_cl_main() {
 	// render
 	double temp[16] = {
 		1, -0, 0, 0,
-		 0, 0.8660253882408142, 0.5, 1.803818464279175,
-		 -0, -0.5, 0.8660253882408142, 3.124305009841919,
-		 0, 0, 0, 1
+		0, 0.8660253882408142, 0.5, 1.803818464279175,
+		-0, -0.5, 0.8660253882408142, 3.124305009841919,
+		0, 0, 0, 1
 	};
 	cv::Mat M = cv::Mat( 4, 4, CV_64F, temp );
 
@@ -91,5 +93,7 @@ void sample_cl_main() {
 
 	cv::Mat color_mat = cv::Mat( 512, 512, CV_32FC4, color_map.data() );
 	cv::flip( color_mat, color_mat, 0 );
+	//	cv::flip( color_mat, color_mat, 1 );
 	cv::imshow( "ray cast", color_mat );
+	cv::waitKey(-1);
 }
