@@ -1,11 +1,11 @@
-#define MAX_DEPTH	(100000.0)
+#define MAX_DEPTH	(100000.0f)
 
 //============================================
 // Image
 //============================================
 float get_depth( __global float *depth_map, int2 dim, float2 v ) {
 	int2 p = clamp( convert_int2_rtn( v ), (int2)(0), dim - 1 );
-	return depth_map[ p.x + p.y * dim.x ] * 0.001;
+	return depth_map[ p.x + p.y * dim.x ] * 0.001f;
 }
 
 float3 get_normal( __global float3 *normal_map, int2 dim, float2 v ) {
@@ -22,7 +22,7 @@ __kernel void depth_to_point( __global float *depth, __global float3 *points, in
 
     int index = x + y * dim.x;
 
-    float d = depth[ index ] * 0.001;
+    float d = depth[ index ] * 0.001f;
 
     float3 p = ( float3 )( x, y, d );
     p.xy -= IK.lo;
@@ -75,7 +75,7 @@ float2 get_df( __global float2 *vol, int3 dim, float3 v ) {
 }
 
 float get_df_c( __global float2 *vol, int3 dim, float3 v ) {
-	v -= 0.5;
+	v -= 0.5f;
 	float3 i = floor(v);
 	float3 f = v - i;
 
@@ -147,15 +147,15 @@ __kernel void df_sphere( __global float2 *vol, int3 dim, float r ) {
 
 	int index = x + y * dim.x + z * dim.x * dim.y;
 
-	float3 v = (float3)( x, y, z ) + 0.5;
-	float3 c = (float3)( dim.x, dim.y, dim.z ) * 0.5;
+	float3 v = (float3)( x, y, z ) + 0.5f;
+	float3 c = (float3)( dim.x, dim.y, dim.z ) * 0.5f;
 
 	float d = length( v - c ) - r;
 	vol[ index ] = (float2)( d, 1.0 );
 }
 
-#define TRUNC		( 3.0 )
-#define MAX_WEIGHT	( 2.0 )
+#define TRUNC		( 3.0f )
+#define MAX_WEIGHT	( 2.0f )
 __kernel void df_fuse(
 			 __global float2 *vol, int3 vol_dim,
 			 __global float *depth_map, __global float3 *normal_map, int2 map_dim,
@@ -173,7 +173,7 @@ __kernel void df_fuse(
     }
 
     // world space
-    float3 world_v = ( convert_float3( pos ) + 0.5 ) * L.w + L.xyz;
+    float3 world_v = ( convert_float3( pos ) + 0.5f ) * L.w + L.xyz;
 
     // view space
     float3 view_v = world_v - M.hi.hi.xyz;
@@ -244,7 +244,7 @@ float ray_vs_df( __global float2 *vol, int3 dim, float3 o, float3 dir, float2 e 
 	float last_d = TRUNC;
 
 	for ( int i = 0; i < 1500; i++ ){
-		t += 1.0;
+		t += 1.0f;
 		if ( t >= e.y ) {
 			break;
 		}
@@ -280,8 +280,8 @@ __kernel void ray_cast( __global float4 *col, int2 col_dim, __global float2 *vol
 
 	// gen ray
 	float3 o, dir;
-	gen_ray( K, M, L, (float2)(x, y) + 0.5, &o, &dir );
-	float3 inv = 1.0 / dir;
+	gen_ray( K, M, L, (float2)(x, y) + 0.5f, &o, &dir );
+	float3 inv = 1.0f / dir;
 
 	// ray vs bound
 	float2 e = ray_vs_bound( o, inv, (float3)( 0.0 ), convert_float3_rtn( vol_dim ), (float2)( 0.0, MAX_DEPTH ) );

@@ -55,10 +55,13 @@ public :
 		printf( "t : %f %f %f\n", m_data.pos[0], m_data.pos[1], m_data.pos[2] );
 		printf( "q : %f %f %f %f\n", m_data.quat[0], m_data.quat[1], m_data.quat[2], m_data.quat[3] );
 	}
-
+	 
 public :
 	static void VRPN_CALLBACK callback(void* user_data, const vrpn_TRACKERCB tData) {
 		memcpy( user_data, &tData, sizeof( tData ) );
+		printf("time : %ld\n", tData.msg_time.tv_sec);
+		printf("t : %f %f %f\n", tData.pos[0], tData.pos[1], tData.pos[2]);
+		printf("q : %f %f %f %f\n", tData.quat[0], tData.quat[1], tData.quat[2], tData.quat[3]);
 	}
 };
 
