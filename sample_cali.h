@@ -5,8 +5,6 @@
 //  Created by Wei Li on 6/4/15.
 //
 
-#ifndef Moc_sample_h
-#define Moc_sample_h
 
 #include "camera_calibration.h"
 #include "vicon_tracker.h"
@@ -198,14 +196,3 @@ void sample_main_calibrate_vicon_velodyne( void ) {
 	Moc::PairPointsRigidRegistration( src, dst, M );
 }
 
-#if 0
-void main() {
-	sample_main_vicon_track();
-	sample_main_kinect();
-	sample_main_calibrate_vicon_kinect();
-	sample_main_calibrate_kinect_kinect();
-	sample_main_calibrate_vicon_velodyne();
-}
-#endif
-
-#endif
