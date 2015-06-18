@@ -1,9 +1,9 @@
 #include <cl.h>
 
-void sample_cl_main( void ) {
+void sample_main_cl( void ) {
 	// shader
 	const char *source =
-	"__kernel void add(__global float *dst, __global float *src0, __global float *src1, int iNumElements ) {"
+	"__kernel void mult(__global float *dst, __global float *src0, __global float *src1, int iNumElements ) {"
 	// find position in global arrays
 	"int x = get_global_id(0);"
 	// bound check (equivalent to the limit on a 'for' loop for standard/serial C code
@@ -38,7 +38,7 @@ void sample_cl_main( void ) {
 	cl::Program program( context, source, flags );
 
 	// kernel
-	cl::Kernel kernel( program, "add" );
+	cl::Kernel kernel( program, "mult" );
 
 	// queue
 	cl::CommandQueue cq( context );
@@ -56,8 +56,4 @@ void sample_cl_main( void ) {
 	for ( int i = 0; i < 9; i++ ) {
 		printf( "%f\n", host_dst[ i ] );
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/master

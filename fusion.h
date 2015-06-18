@@ -14,8 +14,8 @@
 class Fusion {
 	public :
 	cl::int2			image_size;		// depth map size
-	cl::int3			volume_size;	// volume size - volume space
-	cl::float3			bound[2];		// volume size - world space
+	cl::int4			volume_size;	// volume size - volume space
+	cl::float4			bound[2];		// volume size - world space
 
 	cl::size2			global_size2;
 	cl::size2			local_size2;
@@ -63,7 +63,7 @@ class Fusion {
 		mem_n.CreateBuffer( context, CL_MEM_READ_WRITE, image_size.area() * sizeof( cl_float4 ) );
 		mem_w.CreateBuffer( context, CL_MEM_READ_WRITE, image_size.area() * sizeof( cl_float4 ) );
 
-		mem_df.CreateBuffer( context, CL_MEM_READ_WRITE, volume_size.volume() * sizeof( cl_float2 ) );
+		mem_df.CreateBuffer(context, CL_MEM_READ_WRITE, volume_size.x * volume_size.y * volume_size.z * sizeof(cl_float2));
 
 		mem_c.CreateBuffer( context, CL_MEM_READ_WRITE, ( 512 * 512 ) * sizeof( cl_float4 ) );
 	}

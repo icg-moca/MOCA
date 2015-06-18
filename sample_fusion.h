@@ -1,7 +1,10 @@
+#include <camera_calibration.h>
 #include <fusion.h>
+
+
 void LoadFrame( int index, cv::Mat &kinect_mat, cv::Mat &depth ) {
 	char path[ 256 ];
-	sprintf( path, "data/frame%d.raw", index );
+	sprintf( path, "fusion sample data/frame%d.raw", index );
 
 	FILE *fp = fopen( path, "rb" );
 	if ( !fp ) {
@@ -43,7 +46,7 @@ void LoadText( vector<char> &str, const char *path ) {
 	fclose( fp );
 }
 
-void sample_cl_main() {
+void sample_main_fusion() {
 	// cali
 	Moc::Calibrator_Kinect_To_Vicon cali;
 	cali.LoadCali( "cam_cali.txt" );
@@ -75,8 +78,10 @@ void sample_cl_main() {
 	fusion.Clear();
 	for ( int i = 75; i < 80; i++ ){
 		LoadFrame( i, kinect_mat, depth_map );
-		// fusion.ICP( kinect_mat );
+		// fusion.ICP( kinect_mat * cali.cam_extr.inv() );
 		fusion.FuseFrame( cali.cam_intr.Intr(), kinect_mat * cali.cam_extr.inv(), (float*)depth_map.ptr() );
+		//vector<cl::float4> points, normals;
+		//fusion.BackProjectPoints(cali.cam_intr.Intr(), kinect_mat * cali.cam_extr.inv(), (float*)depth_map.ptr(), points, normals );
 	}
 
 	// render
