@@ -304,6 +304,11 @@ public :
 		cam_extr = cv::Mat::eye( 4, 4, CV_64F );
 	}
 
+	// 1 --- 2
+	// |     |
+	// 0 --- 3
+	// size : inner corner
+	// square_size : meter
 	void SetChessboard( cv::Size size, float square_size, const vector< cv::Point3f > &markers ) {
 		board_size = size;
 		board_square_size = square_size;
@@ -350,7 +355,7 @@ public :
 		// intr
 		Moc::CalibrateCameraWithChessboard( img_points, img_size, board_size, board_square_size, cam_intr, extr );
 
-		// extr
+		// extr mats_k_c
 		Moc::CalibrateTransformFromKinectToCamera( img_points, mats_p_to_v, mats_k_to_v, board_markers, board_size, cam_intr, cam_extr );
 
 		cout << cam_extr << endl;

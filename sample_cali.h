@@ -11,18 +11,25 @@
 #include "freenect.h"
 #include "fusion.h"
 
+static void VRPN_CALLBACK sample_callback(void* user_data, const vrpn_TRACKERCB tData) {
+	VRPN_Tracker *tracker = (VRPN_Tracker*)user_data;
+
+	printf("[Sensor %d : %s]: \n", tData.sensor, tracker->m_id.c_str());
+	printf("time : %ld %ld\n", tData.msg_time.tv_sec, tData.msg_time.tv_usec);
+	printf("t : %f %f %f\n", tData.pos[0], tData.pos[1], tData.pos[2]);
+	printf("q : %f %f %f %f\n\n", tData.quat[0], tData.quat[1], tData.quat[2], tData.quat[3]);
+}
+
 void sample_main_vicon_track( void ) {
+	const char *ip = "192.168.10.1";
 	VRPN_Tracker vrpn_pattern, vrpn_kinect;
-	vrpn_pattern.Create( "PATTERNLARGE@192.168.1.136" );
-	vrpn_kinect.Create( "KINECT@192.168.1.136" );
+	vrpn_pattern.Create( "PATTERN", ip, &vrpn_pattern, sample_callback );
+	vrpn_kinect .Create( "KINECT0", ip, &vrpn_kinect , sample_callback );
 
 	while( 1 ) {
 		// update vrpn
 		vrpn_pattern.Loop();
 		vrpn_kinect.Loop();
-
-		vrpn_pattern.Log();
-		vrpn_kinect.Log();
 	}
 }
 
@@ -44,13 +51,26 @@ void sample_main_kinect( void ) {
 	}
 }
 
+cv::Mat vrpn_data_to_mat(vrpn_TRACKERCB data) {
+	return TranslateRotate(cv::Point3d(data.pos[0], data.pos[1], data.pos[2]), QuatToMat(data.quat[0], data.quat[1], data.quat[2], data.quat[3]));
+}
+
+static void VRPN_CALLBACK sample_cali_callback(void* user_data, const vrpn_TRACKERCB tData) {
+	cv::Mat *mat = (cv::Mat*)user_data;
+
+	*mat = vrpn_data_to_mat(tData);
+}
+
 void sample_main_calibrate_vicon_kinect( void ) {
 	//=====================
 	// Vicon
 	//=====================
+	const char *ip = "192.168.10.1";
 	VRPN_Tracker vrpn_pattern, vrpn_kinect;
-	vrpn_pattern.Create( "PATTERNLARGE@192.168.1.136" );
-	vrpn_kinect.Create( "KINECT@192.168.1.136" );
+	cv::Mat mat_pattern = cv::Mat_<double>(4, 4);
+	cv::Mat mat_kinect = cv::Mat_<double>(4, 4);
+	vrpn_pattern.Create("PATTERN", ip, &mat_pattern, sample_cali_callback);
+	vrpn_kinect.Create("KINECT0", ip, &mat_kinect, sample_cali_callback);
 
 	//=====================
 	// Kinect
@@ -63,25 +83,45 @@ void sample_main_calibrate_vicon_kinect( void ) {
 	//=====================
 	Moc::Calibrator_Kinect_To_Vicon cali;
 
+	// 1 --- 2
+	// |     |
+	// 0 --- 3
+	// size : inner corner
+	// square_size : meter
+
 	// init chessboard
+	// FIXME : unit vsk coordinates is mm
 	vector< cv::Point3f > markers(4);
-	markers[0].x = -0.213301147460938;
-	markers[0].y = 0.400469909667969;
-	markers[0].z = -0.270611022949219;
 
-	markers[1].x = 0.153394592285156;
-	markers[1].y = 0.385762634277344;
-	markers[1].z = 0.190735992431641;
+	cv::Point3f vec_1, vec_2, norm_pattern;
 
-	markers[2].x = 0.140245666503906;
-	markers[2].y = -0.396933837890625;
-	markers[2].z = 0.177871490478516;
+	markers[0].x = -306.10238647460937;
+	markers[0].y = -51.083488464355469;
+	markers[0].z = -392.67129516601562;
 
-	markers[3].x = -0.226152709960938;
-	markers[3].y = -0.383085083007813;
-	markers[3].z = -0.281757385253906;
+	markers[1].x = -304.46176147460938;
+	markers[1].y = 78.798492431640625;
+	markers[1].z = 305.35824584960937;
 
-	cali.SetChessboard( cv::Size( 11, 8 ), 0.0655, markers );
+	markers[2].x = 503.78604125976562;
+	markers[2].y = 21.791416168212891;
+	markers[2].z = 314.55368041992187;
+
+	markers[3].x = 502.2266845703125;
+	markers[3].y = -108.68138885498047;
+	markers[3].z = -383.49655151367187;
+
+	//subtract the height of the marker
+	vec_1 = markers[0] - markers[1];
+	vec_2 = markers[2] - markers[1];
+
+	norm_pattern = vec_1.cross(vec_2) / (float)(cv::norm(vec_1.cross(vec_2))) * 10.0f;
+
+	for (int i = 0; i < markers.size(); i++) {
+		markers[i] = ( markers[i] - norm_pattern ) * 0.001f;
+	}
+
+	cali.SetChessboard( cv::Size( 7, 6 ), 0.1016, markers );
 
 	// reset frames
 	cali.ResetFrames();
@@ -99,7 +139,7 @@ void sample_main_calibrate_vicon_kinect( void ) {
 
 		if ( cali.isCalibrated ) {
 			vector<cv::Point2f> proj;
-			Moc::ProjectPoints( cali.board_corners, cali.cam_intr, cali.cam_extr * vrpn_kinect.Mat().inv() * vrpn_pattern.Mat(), proj );
+			Moc::ProjectPoints( cali.board_corners, cali.cam_intr, cali.cam_extr * mat_kinect.inv() * mat_pattern, proj );
 			for ( int i = 0; i < proj.size(); i++ ) {
 				cv::Point pt( proj[i].x, proj[i].y );
 				cv::Scalar color( 0, 0, 255 );
@@ -112,13 +152,14 @@ void sample_main_calibrate_vicon_kinect( void ) {
 
 		// capture new frame
 		if ( key == '0' ) {
-			cali.CaptureFrame( kinect.img_ir, vrpn_pattern.Mat(), vrpn_kinect.Mat() );
+			cali.CaptureFrame( kinect.img_ir, mat_pattern, mat_kinect );
 		}
 
 		// calibrate kinect and save config
 		if ( key == '1' ) {
 			cali.Calibrate();
-			cali.SaveCali( "cam_cali.txt" );
+			string name = vrpn_kinect.m_id + "_cali.txt";
+			cali.SaveCali( name.c_str() );
 		}
 	}
 }
@@ -138,7 +179,7 @@ void sample_main_calibrate_kinect_kinect( void ) {
 
 	for ( int i = 0; i < cali.size(); i++ ) {
 		// init chessboard
-		cali[ i ].SetChessboard( cv::Size( 11, 8 ), 0.0655 );
+		cali[ i ].SetChessboard( cv::Size( 8, 7 ), 0.1016 );
 
 		// reset frames
 		cali[ i ].ResetFrames();

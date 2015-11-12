@@ -9,47 +9,45 @@
 #define Moc_viconTrack_h
 
 #include <memory>
-using namespace std;
+#include <string>
+#include <vector>
 
 #include <vrpn_Tracker.h>
 
 class VRPN_Tracker {
-public :
-	string									m_name;
-	vrpn_TRACKERCB							m_data;
-	shared_ptr< vrpn_Tracker_Remote >		m_tracker;
+public:
+	std::string									m_name;
+	std::string									m_id;
+	std::string									m_ip;
+	std::shared_ptr< vrpn_Tracker_Remote >		m_tracker;
 
-public :
+public:
 	VRPN_Tracker() {
 	}
 
-	VRPN_Tracker( const char *name ) {
-		Create( name );
+	VRPN_Tracker(const char *id, const char *ip, void *data, vrpn_TRACKERCHANGEHANDLER handler) {
+		Create(id, ip, data, handler);
 	}
 
-	void Create( const char *name ) {
-		m_name = name;
-		m_tracker.reset( new vrpn_Tracker_Remote( m_name.c_str() ) );
-		if ( m_tracker ) {
-			m_tracker->register_change_handler( &m_data, callback );
+	void Create(const char *id, const char *ip, void *data, vrpn_TRACKERCHANGEHANDLER handler) {
+		m_id = id;
+		m_ip = ip;
+		m_name = m_id + "@" + m_ip;
+
+		m_tracker.reset(new vrpn_Tracker_Remote(m_name.c_str()));
+		if (m_tracker) {
+			m_tracker->register_change_handler(data, handler);
 		}
 	}
 
-	void Delete( void ) {
-		m_name.clear();
-		m_tracker.reset();
-	}
-
-	void Loop( void ) {
-		if ( m_tracker ) {
+	void Loop(void) {
+		if (m_tracker) {
 			m_tracker->mainloop();
 		}
 	}
+};
 
-	cv::Mat Mat( void ) const {
-		return TranslateRotate( cv::Point3d( m_data.pos[0], m_data.pos[1], m_data.pos[2] ), QuatToMat( m_data.quat[0], m_data.quat[1], m_data.quat[2], m_data.quat[3] ) );
-	}
-
+/*
 	void Log( void ) const {
 		printf( "time : %ld\n", m_data.msg_time.tv_sec );
 		printf( "t : %f %f %f\n", m_data.pos[0], m_data.pos[1], m_data.pos[2] );
@@ -64,5 +62,5 @@ public :
 		printf("q : %f %f %f %f\n", tData.quat[0], tData.quat[1], tData.quat[2], tData.quat[3]);
 	}
 };
-
+*/
 #endif
