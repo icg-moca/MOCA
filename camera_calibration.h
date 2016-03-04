@@ -38,7 +38,18 @@ public :
 		distCoef     = cv::Mat::zeros( 8, 1, CV_64F );
 	}
 
-	cv::Mat Intr( void ) const {
+	cv::Mat Intrinsic(void) const {
+		cv::Mat K = cv::Mat(4, 1, CV_64F);
+
+		K.at<double>(0, 0) = cameraMatrix.at<double>(0, 0);
+		K.at<double>(1, 0) = cameraMatrix.at<double>(1, 1);
+		K.at<double>(2, 0) = cameraMatrix.at<double>(0, 2);
+		K.at<double>(3, 0) = cameraMatrix.at<double>(1, 2);
+
+		return K;
+	}
+	
+	cv::Mat Intr(void) const {
 		cv::Mat K = cv::Mat( 4, 1, CV_64F );
 
 		K.at<double>( 0, 0 ) = cameraMatrix.at<double>( 0, 2 );

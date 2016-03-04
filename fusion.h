@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 EPH. All rights reserved.
 //
 
-#ifndef Moc_fusion_h
-#define Moc_fusion_h
+#ifndef Moca_fusion_h
+#define Moca_fusion_h
 
 #include <cl.h>
 

@@ -1,3 +1,6 @@
+#ifndef __SAMPLE_FUSION__
+#define __SAMPLE_FUSION__
+
 #include <camera_calibration.h>
 #include <fusion.h>
 
@@ -48,8 +51,8 @@ void LoadText( vector<char> &str, const char *path ) {
 
 void sample_main_fusion() {
 	// cali
-	Moc::Calibrator_Kinect_To_Vicon cali;
-	cali.LoadCali( "cam_cali.txt" );
+	Moc::CameraParameter cali;
+	cali.LoadCali( "fusion sample data/cam_cali.txt" );
 
 	// fusion setup
 	Fusion fusion;
@@ -78,10 +81,10 @@ void sample_main_fusion() {
 	fusion.Clear();
 	for ( int i = 75; i < 80; i++ ){
 		LoadFrame( i, kinect_mat, depth_map );
-		// fusion.ICP( kinect_mat * cali.cam_extr.inv() );
-		fusion.FuseFrame( cali.cam_intr.Intr(), kinect_mat * cali.cam_extr.inv(), (float*)depth_map.ptr() );
+		// fusion.ICP( kinect_mat * cali.extr.inv() );
+		fusion.FuseFrame( cali.intr.Intr(), kinect_mat * cali.extr.inv(), (float*)depth_map.ptr() );
 		//vector<cl::float4> points, normals;
-		//fusion.BackProjectPoints(cali.cam_intr.Intr(), kinect_mat * cali.cam_extr.inv(), (float*)depth_map.ptr(), points, normals );
+		//fusion.BackProjectPoints(cali.intr.Intr(), kinect_mat * cali.extr.inv(), (float*)depth_map.ptr(), points, normals );
 	}
 
 	// render
@@ -102,3 +105,4 @@ void sample_main_fusion() {
 	cv::imshow( "ray cast", color_mat );
 	cv::waitKey(-1);
 }
+#endif
