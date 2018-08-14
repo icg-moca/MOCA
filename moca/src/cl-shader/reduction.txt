@@ -1,0 +1,30 @@
+__kernel void reduction( int size, int stride, __global float *v ) {
+	int global_id = get_global_id(0);
+	int local_id = get_local_id(0);
+	int group_id = get_group_id(0);
+	int group_size = 256;
+
+	__local float temp[256];
+
+	// load and accumulate local mem
+	float s = 0.0f;
+	for ( int i = global_id; i < size; i += stride ) {
+		s += v[i];
+	}
+	temp[local_id] = s;
+
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	// reduction within group
+	for ( int offset = group_size >> 1; offset > 0; offset >>= 1 ) {
+		if ( local_id < offset ) {
+			temp[local_id] += temp[local_id + offset];
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+	barrier(CLK_GLOBAL_MEM_FENCE);
+	
+	if ( local_id == 0 ) {
+		v[group_id] = temp[0];
+	}
+}

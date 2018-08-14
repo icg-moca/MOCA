@@ -1,0 +1,35 @@
+﻿Build started 8/14/2018 7:47:02 PM.
+     1>Project "C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\proj-cl-create-context\proj-cl-create-context.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\Debug\".
+       InitializeBuildStatus:
+         Creating "Debug\proj-cl-create-context.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\admin13302\Documents\GitHub\Fusion\moca\src /IC:\Users\admin13302\Documents\GitHub\Fusion\moca\dependency /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Debug\proj-cl-create-context.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\admin13302\Documents\GitHub\Fusion\moca\src /IC:\Users\admin13302\Documents\GitHub\Fusion\moca\dependency /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\proj-cl-create-context.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "proj-cl-create-context.cpp"
+         proj-cl-create-context.cpp
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-cl-create-context\proj-cl-create-context\proj-cl-create-context.cpp(29): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-cl-create-context\proj-cl-create-context\proj-cl-create-context.cpp(30): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\proj-cl-create-context.exe.embed.manifest.res" Debug\proj-cl-create-context_manifest.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\Debug\proj-cl-create-context.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\Users\admin13302\Documents\GitHub\Fusion\moca\dependency\lib opencl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\proj-cl-create-context.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\Debug\proj-cl-create-context.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\Debug\proj-cl-create-context.lib" /MACHINE:X86 "Debug\proj-cl-create-context.exe.embed.manifest.res"
+         "Debug\proj-cl-create-context.obj"
+         Debug\stdafx.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\proj-cl-create-context.exe.embed.manifest" /manifest "Debug\proj-cl-create-context.exe.intermediate.manifest"
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\proj-cl-create-context.exe.embed.manifest.res" Debug\proj-cl-create-context_manifest.rc 
+       LinkEmbedManifest:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\Debug\proj-cl-create-context.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\Users\admin13302\Documents\GitHub\Fusion\moca\dependency\lib opencl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\proj-cl-create-context.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\Debug\proj-cl-create-context.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\Debug\proj-cl-create-context.lib" /MACHINE:X86 "Debug\proj-cl-create-context.exe.embed.manifest.res"
+         "Debug\proj-cl-create-context.obj"
+         Debug\stdafx.obj
+         proj-cl-create-context.vcxproj -> C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\Debug\proj-cl-create-context.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\proj-cl-create-context.unsuccessfulbuild".
+         Touching "Debug\proj-cl-create-context.lastbuildstate".
+     1>Done Building Project "C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-cl-create-context\proj-cl-create-context\proj-cl-create-context.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.94
