@@ -546,8 +546,9 @@ namespace cl {
 			size_t size = 0;
 			clGetProgramBuildInfo( _program, _device_id, CL_PROGRAM_BUILD_LOG, 0, 0, &size );
 
-			vector< char > log( size );
+			vector< char > log( size + 1 );
 			clGetProgramBuildInfo( _program, _device_id, CL_PROGRAM_BUILD_LOG, size, log.data(), 0 );
+			log.push_back( 0 );
 
 			printf( "[CL] Program :\n" );
 			printf( "%s\n", log.data() );

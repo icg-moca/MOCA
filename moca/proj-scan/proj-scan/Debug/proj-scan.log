@@ -1,4 +1,4 @@
-﻿Build started 8/14/2018 7:44:18 PM.
+﻿Build started 8/14/2018 9:14:57 PM.
      1>Project "C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-scan\proj-scan\proj-scan.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\proj-scan.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -6,8 +6,11 @@
          All outputs are up-to-date.
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\Users\admin13302\Documents\GitHub\Fusion\moca\dependency /IC:\Users\admin13302\Documents\GitHub\Fusion\moca\src /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\proj-scan.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt "proj-scan.cpp"
          proj-scan.cpp
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-scan\proj-scan\proj-scan.cpp(29): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-scan\proj-scan\proj-scan.cpp(30): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-scan\proj-scan\proj-scan.cpp(14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-scan\proj-scan\proj-scan.cpp(50): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-scan\proj-scan\proj-scan.cpp(51): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-scan\proj-scan\proj-scan.cpp(57): warning C4018: '<' : signed/unsigned mismatch
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -27,4 +30,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.27
+Time Elapsed 00:00:01.60

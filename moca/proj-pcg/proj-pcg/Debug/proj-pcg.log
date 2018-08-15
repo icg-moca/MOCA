@@ -1,4 +1,4 @@
-﻿Build started 8/14/2018 7:23:41 PM.
+﻿Build started 8/14/2018 9:18:15 PM.
      1>Project "C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-pcg\proj-pcg\proj-pcg.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\proj-pcg.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -44,4 +44,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:08.63
+Time Elapsed 00:00:11.22
