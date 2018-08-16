@@ -69,9 +69,11 @@ void mad_v_mult_mat( int size, __global float *B, __global float *v, __global fl
 
 // src * scalar +=> dst
 __kernel void mul_m_v(
-	int size, // gridSize
-	__global int *rowScan, __global int2 *blockInfos, __global float *blocks, // m
-	__global float *src, __global float *dst
+	int gridSize, int blockSize,
+	__const __global int *rowScan, __const __global int2 *blockInfos, __const __global float *blocks, // m
+	__const __global float *src,
+	__global float *dst,
+	__local float *sum
 ) {
 	int global_id = get_global_id(0);
 	int local_id = get_local_id(0);
@@ -79,18 +81,14 @@ __kernel void mul_m_v(
 	int local_size = get_local_size(0);
 	
 	int row = group_id;
-	if ( row >= size ) {
+	if ( row >= gridSize ) {
 		return;
 	}
-
-	const int blockSize = 12;
 
 	__global float *ptr_r = dst + row * blockSize;
 
 	int start = rowScan[row];
 	int end = rowScan[row+1]; // column blocks
-
-	__local float sum[12 * 64];
 
 	for ( int i = 0; i < blockSize; i++ ) {
 		sum[i + blockSize * local_id] = 0;
@@ -104,8 +102,8 @@ __kernel void mul_m_v(
 		int col = info.x;
 		int blk = info.y;
 		
-		__global float *ptr_B = blocks + blk * blockSize * blockSize;
-		__global float *ptr_v = src + col * blockSize;
+		__const __global float *ptr_B = blocks + blk * blockSize * blockSize;
+		__const __global float *ptr_v = src + col * blockSize;
 
 		if ( col >= row ) {					
 			mad_mat_mult_v_local( blockSize, ptr_B, ptr_v, sum_p  );
@@ -117,8 +115,8 @@ __kernel void mul_m_v(
 
 	for ( int offset = local_size >> 1; offset > 0; offset >>= 1 ) {
 		if ( local_id < offset ) {
-			__local float *sum_src = sum + 12 * (local_id + offset);
-			for ( int i = 0; i < 12; i++ ) {
+			__local float *sum_src = sum + blockSize * (local_id + offset);
+			for ( int i = 0; i <  blockSize; i++ ) {
 				sum_p[i] += sum_src[i];
 			}
 		}
@@ -126,7 +124,7 @@ __kernel void mul_m_v(
 	}
 
 	if ( local_id == 0 ) {
-		for ( int i = 0; i < 12; i++ ) {
+		for ( int i = 0; i < blockSize; i++ ) {
 			ptr_r[i] += sum[i];
 		}
 	}
@@ -135,7 +133,7 @@ __kernel void mul_m_v(
 // src * scalar +=> dst
 __kernel void mul_m_v2(
 	int size, // gridSize
-	__global int *rowScan, __global int2 *blockInfos, __global float *blocks, // m
+	__const __global int *rowScan, __const __global int2 *blockInfos, __const __global float *blocks, // m
 	__global float *src, __global float *dst
 ) {
 	int row = get_global_id(0);
