@@ -90,12 +90,14 @@ __kernel void mul_m_v(
 	int start = rowScan[row];
 	int end = rowScan[row+1]; // column blocks
 
-	__local float sum[12 * 8];
+	__local float sum[12 * 64];
 
-	for ( int i = 0; i < 12; i++ ) {
-		sum[i + 12 * local_id] = 0;
+	for ( int i = 0; i < blockSize; i++ ) {
+		sum[i + blockSize * local_id] = 0;
 	}
-		
+	
+	__local float *sum_p = sum + blockSize * local_id;
+
 	int index = start + local_id;
 	for ( int index = start + local_id; index < end; index += local_size ) {
 		int2 info = blockInfos[index];
@@ -106,17 +108,18 @@ __kernel void mul_m_v(
 		__global float *ptr_v = src + col * blockSize;
 
 		if ( col >= row ) {					
-			mad_mat_mult_v_local( blockSize, ptr_B, ptr_v, sum + 12 * local_id );
+			mad_mat_mult_v_local( blockSize, ptr_B, ptr_v, sum_p  );
 		} else {
-			mad_v_mult_mat_local( blockSize, ptr_B, ptr_v, sum + 12 * local_id );
+			mad_v_mult_mat_local( blockSize, ptr_B, ptr_v, sum_p );
 		}
 	}
 	barrier(CLK_LOCAL_MEM_FENCE);
 
 	for ( int offset = local_size >> 1; offset > 0; offset >>= 1 ) {
 		if ( local_id < offset ) {
+			__local float *sum_src = sum + 12 * (local_id + offset);
 			for ( int i = 0; i < 12; i++ ) {
-				sum[i + 12 * local_id] += sum[i + 12 * (local_id + offset)];
+				sum_p[i] += sum_src[i];
 			}
 		}
 		barrier(CLK_LOCAL_MEM_FENCE);
@@ -142,10 +145,14 @@ __kernel void mul_m_v2(
 
 	const int blockSize = 12;
 
-	__global float *ptr_r = dst + row * blockSize;
+	__global float *ptr_R = dst + row * blockSize;
+	for ( int k = 0; k < 12; k++ ) {
+		ptr_R[k] = 0.0f;
+	}
 
 	int start = rowScan[row];
 	int end = rowScan[row+1]; // column blocks
+
 	for ( int i = start; i < end; i++ ) {
 		int2 info = blockInfos[i];
 		int col = info.x;
@@ -155,9 +162,9 @@ __kernel void mul_m_v2(
 		__global float *ptr_v = src + col * blockSize;
 
 		if ( col >= row ) {					
-			mad_mat_mult_v( blockSize, ptr_B, ptr_v, ptr_r );
+			mad_mat_mult_v( blockSize, ptr_B, ptr_v, ptr_R );
 		} else {
-			mad_v_mult_mat( blockSize, ptr_B, ptr_v, ptr_r );
+			mad_v_mult_mat( blockSize, ptr_B, ptr_v, ptr_R );
 		}
 	}
 }

@@ -17,6 +17,8 @@
 #include <import.h>
 #include <api/cl_wrapper.h>
 
+#include <time.h>
+
 Eigen::VectorXf pcg( const SparseBlockSquareMatrix<12> &A, const Eigen::VectorXf &b, int maxIters, float threshold = 1e-6 ) {
 	Eigen::VectorXf M = A.diagonal();
 	for ( int i = 0; i < M.rows(); i++ ) {
@@ -31,21 +33,28 @@ Eigen::VectorXf pcg( const SparseBlockSquareMatrix<12> &A, const Eigen::VectorXf
 	Eigen::VectorXf p = Eigen::VectorXf::Zero(A.size());
 	Eigen::VectorXf r = b; // b - A * x
 
+	int numIters = 0;
+	clock_t begin = clock();
 	for ( int i = 0; i < maxIters; i++ ) {
-		float rme = sqrt( r.dot( r ) / A.size() );
-		printf( "PCG : %d : %f\n", i, rme );
-		if ( rme < 1e-6 ) {
-			break;
-		}
+		numIters++;
+
 		Eigen::VectorXf Mr = M.array() * r.array();
-		float r_rMr = 1.0f / r.dot( Mr );
+		float r_rMr = std::max(1.0f / r.dot( Mr ), 1e-6f);
 		p += Mr * r_rMr;
 
 		Eigen::VectorXf Ap = A * p;
-		float r_pAp = 1.0f / p.dot( Ap );
+		float r_pAp = std::max(1.0f / p.dot( Ap ), 1e-6f );
 		x +=  p * r_pAp;
 		r -= Ap * r_pAp;
+
+		//float rme = sqrt( r.dot( r ) / A.size() );
+		//if ( rme < 1e-6 ) {
+		//	break;
+		//}
 	}
+	clock_t end = clock();
+	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	printf( "cpu pcg time %fms : %d\n", time_spent * 1000, numIters );
 
 	return x;
 }
@@ -203,49 +212,63 @@ Eigen::VectorXf cl_pcg( SparseBlockSquareMatrix<12> &A, Eigen::VectorXf &b, int 
 	// r = b = b - A * x
 	cq.WriteBuffer( mem_r, CL_TRUE, 0, bufferSize, b.data() );
 	
+	int numIters = 0;
+	
+	clock_t begin = clock();
 	for ( int i = 0; i < maxIters; i++ ) {
-		float rme =  cl_dot_product( cq, kn_mul_v_v, kn_reduction, mem_r, mem_r, mem_dot, A.size(), global_work_size, local_work_size );
-		rme = sqrt( rme / A.size() );
-		printf( "PCG : %d : %f\n", i, rme );
-		if ( rme < 1e-6 ) {
-			break;
-		}
+		numIters++;
 
 		// Mr = M * r;
 		cq.Kernel1D( (kn_mul_v_v << A.size(), mem_M, mem_r, mem_Mv ), global_work_size, local_work_size );
 
 		// rMr = r dot Mr;
 		float rMr = cl_dot_product( cq, kn_mul_v_v, kn_reduction, mem_r, mem_Mv, mem_dot, A.size(), global_work_size, local_work_size );
+		rMr = std::max( rMr, 1e-6f );
 
 		// p += Mr / rMr'
 		cq.Kernel1D( (kn_mad_v_s << A.size(), mem_Mv, 1.0f / rMr, mem_p ), global_work_size, local_work_size );
 
 		// Ap = A * p
 		cq.Kernel1D( (kn_zero_v << A.size(), mem_Mv), global_work_size, local_work_size );
-		cq.Kernel1D( (kn_mul_m_v << A.size(), mem_A_rowScan, mem_A_blockInfos, mem_A_blocks, mem_p, mem_Mv ), A.gridSize * 2, 2 );
+		//cq.Kernel1D( (kn_mul_m_v << A.gridSize, mem_A_rowScan, mem_A_blockInfos, mem_A_blocks, mem_p, mem_Mv ), ceil( A.gridSize, 16 ), 16 );
+		cq.Kernel1D( (kn_mul_m_v << A.gridSize, mem_A_rowScan, mem_A_blockInfos, mem_A_blocks, mem_p, mem_Mv ), A.gridSize * 64, 64 );
 
 		// pAp = p dot Ap
 		float pAp = cl_dot_product( cq, kn_mul_v_v, kn_reduction, mem_p, mem_Mv, mem_dot, A.size(), global_work_size, local_work_size );
+		pAp = std::max( pAp, 1e-6f );
 
 		// r -= Ap / pAp;
 		cq.Kernel1D( (kn_mad_v_s << A.size(), mem_Mv, -1.0f / pAp, mem_r), global_work_size, local_work_size );
 
 		// x +=  p / pAp;
 		cq.Kernel1D( (kn_mad_v_s << A.size(), mem_p , +1.0f / pAp, mem_x), global_work_size, local_work_size );
+
+//		float rme =  cl_dot_product( cq, kn_mul_v_v, kn_reduction, mem_r, mem_r, mem_dot, A.size(), global_work_size, local_work_size );
+//		rme = sqrt( rme / A.size() );
+//		printf( "PCG : %d : %f\n", i, rme );
+//		if ( rme < 1e-6 ) {
+		//	break;
+//		}
 	}
+	cq.Finish();
+
+	clock_t end = clock();
+	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+
+	printf( "time pcg gpu %fms : %d\n", time_spent * 1000, numIters );
 
 	cq.ReadBuffer( mem_x, CL_TRUE, 0, bufferSize, x.data() );
 	return x;
 }
 
 void TestPCG( void ) {
-	int dim = 48;
+	int dim = 12 * 120;
 
 	// A : positive definite matrix
 	Eigen::MatrixXf A = Eigen::MatrixXf::Random( dim, dim );
 	A = A * A.transpose();
 	A += Eigen::MatrixXf::Identity( dim, dim ) * dim;
-
+	printf( "Random A\n" );
 	//std::cout << A << std::endl;
 
 	// x
@@ -254,15 +277,45 @@ void TestPCG( void ) {
 	// b
 	Eigen::VectorXf b = A * x;
 
+#if 0
 	{
+		clock_t begin = clock();
 		Eigen::VectorXf xx = A.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
+		clock_t end = clock();
+		double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+		printf( "cpu eigen time %fms\n", time_spent * 1000 );
+		
+		std::cout << ( xx - x ).dot( xx - x ) / xx.rows() << std::endl << std::endl;
+	}
+#endif
+
+	{
+		// fill A and b
+		Eigen::ConjugateGradient<Eigen::MatrixXf, Eigen::Lower|Eigen::Upper> cg;
+		clock_t begin = clock();
+		
+		cg.compute(A);
+		x = cg.solve(b);
+		
+		clock_t end = clock();
+		double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+		printf( "cpu eigen time %fms\n", time_spent * 1000 );
+
+		std::cout << "#iterations:     " << cg.iterations() << std::endl;
+		std::cout << "estimated error: " << cg.error()      << std::endl;
+	}
+
+	{
+		SparseBlockSquareMatrix<12> B;
+		B = A;
+		Eigen::VectorXf xx = cl_pcg( B, b, 1000 );
 		std::cout << ( xx - x ).dot( xx - x ) / xx.rows() << std::endl << std::endl;
 	}
 
 	{
 		SparseBlockSquareMatrix<12> B;
 		B = A;
-		Eigen::VectorXf xx = cl_pcg( B, b, 100 );
+		Eigen::VectorXf xx = pcg( B, b, 1000 );
 		std::cout << ( xx - x ).dot( xx - x ) / xx.rows() << std::endl << std::endl;
 	}
 }

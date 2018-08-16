@@ -1,4 +1,4 @@
-﻿Build started 8/15/2018 10:30:19 PM.
+﻿Build started 8/16/2018 3:25:47 PM.
      1>Project "C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-pcg\proj-pcg\proj-pcg.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\proj-pcg.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -9,24 +9,24 @@
      1>c:\users\admin13302\documents\github\fusion\moca\src\math\matrix.h(28): warning C4244: 'argument' : conversion from 'int' to 'const float', possible loss of data
      1>c:\users\admin13302\documents\github\fusion\moca\src\import.h(4): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(111): warning C4244: 'initializing' : conversion from 'unsigned int' to 'float', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(116): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(122): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(123): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(124): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(127): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(128): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(193): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(204): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(237): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(247): warning C4244: 'argument' : conversion from 'int' to 'const float', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(120): warning C4244: 'initializing' : conversion from 'unsigned int' to 'float', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(125): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(131): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(132): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(133): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(136): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(137): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(202): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(213): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(258): warning C4244: 'argument' : conversion from 'float' to 'size_t', possible loss of data
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(268): warning C4244: 'argument' : conversion from 'int' to 'const float', possible loss of data
      1>c:\users\admin13302\documents\github\fusion\moca\src\math\sparseblocksquarematrix.h(96): warning C4018: '<' : signed/unsigned mismatch
                  c:\users\admin13302\documents\github\fusion\moca\src\math\sparseblocksquarematrix.h(84) : while compiling class template member function 'void SparseBlockSquareMatrix<blockSize>::alloc(void)'
                  with
                  [
                      blockSize=12
                  ]
-                 c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(21) : see reference to class template instantiation 'SparseBlockSquareMatrix<blockSize>' being compiled
+                 c:\users\admin13302\documents\github\fusion\moca\proj-pcg\proj-pcg\proj-pcg.cpp(23) : see reference to class template instantiation 'SparseBlockSquareMatrix<blockSize>' being compiled
                  with
                  [
                      blockSize=12
@@ -57,4 +57,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:08.80
+Time Elapsed 00:00:05.21
