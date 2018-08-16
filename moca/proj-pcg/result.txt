@@ -1,0 +1,19 @@
+size: 12* 512
+=============== Eigen ===============
+cpu eigen (ms) : 470.000 : 47.000 : 10
+7.77453e-008
+18911232
+
+=============== CPU ===============
+pcg cpu (ms) : 335.000 : 55.833 : 6
+6.85045e-008
+
+
+=============== GPU ===============
+[CL] Platform   : 1
+[CL] Version    : OpenCL 1.2 CUDA 9.1.83
+[CL] Vendor     : NVIDIA Corporation
+[CL] Device : 1
+[CL] : GPU Device : 1
+pcg gpu (ms) : 56.000 : 9.333 : 6
+6.85058e-008
