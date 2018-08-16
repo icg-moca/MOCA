@@ -1,0 +1,450 @@
+float3 mat4_mult_vec3( float16 M, float3 v ) {
+	return ( M.lo.lo * v.x + M.lo.hi * v.y + M.hi.lo * v.z + M.hi.hi ).xyz;
+}
+
+
+float3 mat4_mult_dir3( float16 M, float3 v ) {
+	return ( M.lo.lo * v.x + M.lo.hi * v.y + M.hi.lo * v.z ).xyz;
+}
+
+__kernel void reduce_local16( __local float16 *temp ) {
+	int l_x = get_local_id(0);
+
+	for( int offset = get_local_size(0) >> 1; offset > 0; offset >>= 1 ) {
+		if ( l_x < offset ) { // FIXME
+			temp[l_x] += temp[l_x + offset];
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+}
+
+__kernel void reduce_local( __local float *temp ) {
+	int l_x = get_local_id(0);
+
+	for( int offset = get_local_size(0) >> 1; offset > 0; offset >>= 1 ) {
+		if ( l_x < offset ) { // FIXME
+			temp[l_x] += temp[l_x + offset];
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+}
+
+__kernel void jacobian(
+	__global float8 *J0, __global float8 *J1,
+	__global float3 *src_points, __global float3 *src_normals,
+	__global float3 *dst_points, __global float3 *dst_normals,
+	float16 src_M, float16 dst_M, float16 inv_dst_M, float4 dst_K,
+	int size
+ ) {
+	int id = get_global_id(0);
+	if ( id >= size ) {
+		return;
+	}
+	
+	J0[id] = (float8)( 0.0f );
+	J1[id] = (float8)( 0.0f );
+
+
+	float3 src_p = mat4_mult_vec3( src_M, src_points[id] );
+	float3 src_n = mat4_mult_dir3( src_M, src_normals[id] );
+
+	float3 v = mat4_mult_vec3( inv_dst_M, src_p );
+	int2 u = convert_int2_rtn( v.xy / v.z * dst_K.xy + dst_K.zw );
+	if ( u.x < 10 || u.y < 10 || u.x >= 512 - 10 || u.y >= 424 - 10 ) {
+		return;
+	}
+	int index = u.x + u.y * 512;
+
+	float3 dst_p = mat4_mult_vec3( dst_M, dst_points[index] );
+	float3 dst_n = mat4_mult_dir3( dst_M, dst_normals[index] );
+
+	if ( fabs( src_p.x ) > 3.0f || fabs( src_p.z ) > 3.0f ) {
+		return;
+	}
+
+	// correspondence
+
+	// back face
+	float dot_n = dot( src_n, dst_n );
+	if ( dot_n <= 0.0f ) {
+		return;
+	}
+
+	// distance
+	float len = length( src_p - dst_p );
+	if ( len > 0.01f ) {
+		return;
+	}
+
+	float r = dot( dst_p - src_p, dst_n );
+
+	float w = fabs( dot_n / (r * r) );
+
+	J0[id] = (float8)( cross( src_p, dst_n ), dst_n, r, w );
+
+	J1[id] = (float8)( cross( -dst_p, dst_n ), -dst_n, r, w );
+}
+
+__kernel void reduction_j(
+	__global float *J0, __global float8 *J1, int index,
+	__global float8 *V,
+	int size
+ ) {
+	int local_id = get_local_id(0);
+
+	__local float8 temp[256];
+
+	// fill local buffer
+	float8 sum = (float8)( 0.0f );
+	for ( int i = local_id; i < size; i += get_local_size(0) ) {
+		sum += J0[ i * 8 + 7 ] * J0[ i * 8 + index ] * J1[ i ]; 
+	}
+	temp[local_id] = sum;
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	for( int offset = get_local_size(0) >> 1; offset > 0; offset >>= 1 ) {
+		if ( local_id < offset ) { // FIXME
+			temp[local_id] += temp[local_id + offset];
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+
+	if ( local_id == 0 ) {
+		*V = temp[0];
+	}
+ }
+
+ __kernel void reduction_E(
+	__global float8 *J,
+	__global float8 *V,
+	int size
+ ) {
+	int local_id = get_local_id(0);
+
+	__local float2 temp[256];
+
+	// fill local buffer
+	float2 sum = (float2)( 0.0f );
+	for ( int i = local_id; i < size; i += get_local_size(0) ) {
+		float r = J[i].s6;
+		float w = J[i].s7;
+		sum += (float2)( r * r * w, w ); 
+	}
+	temp[local_id] = sum;
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	for( int offset = get_local_size(0) >> 1; offset > 0; offset >>= 1 ) {
+		if ( local_id < offset ) { // FIXME
+			temp[local_id] += temp[local_id + offset];
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+
+	if ( local_id == 0 ) {
+		(*V).lo.lo = temp[0];
+	}
+ }
+
+__kernel void reduce( __global float16 *src, __global float16 *dst, __local float16 *temp, int src_size ) {
+	int g_x = get_global_id(0);
+	int l_x = get_local_id(0);
+	
+	int work_size = get_global_size(0);
+
+	float16 sum = (float16)( 0 );
+	for ( int i = g_x; i < src_size; i += work_size ) {
+		sum += src[i];
+	}
+	temp[l_x] = sum;
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	reduce_local16( temp );
+
+	if ( l_x == 0 ) { // FIXME
+		dst[get_group_id(0)] = temp[0];
+	}
+}
+
+__kernel void reduce2( __global float4 *src0, __global float4 *src1, __global float *dst, __local float *temp, int src_size ) {
+	int g_x = get_global_id(0);
+	int l_x = get_local_id(0);
+	
+	int work_size = get_global_size(0);
+
+	float sum = (float)( 0 );
+	for ( int i = g_x; i < src_size; i += work_size ) {
+		sum += dot( src0[i], src1[i] );
+	}
+	temp[l_x] = sum;
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	for( int offset = get_local_size(0) >> 1; offset > 0; offset >>= 1 ) {
+		if ( l_x < offset ) { // FIXME
+			temp[l_x] += temp[l_x + offset];
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+
+	if ( l_x == 0 ) { // FIXME
+		dst[get_group_id(0)] = temp[0];
+	}
+}
+
+__kernel void zero_v( int size, __global float *v ) {
+	int x = get_global_id(0);
+	if ( x >= size ) {
+		return;
+	}
+
+	v[x] = 0;
+}
+
+__kernel void mul_v_v( int size, __global float *dst, __global float *src0, __global float *src1 ) {
+	int x = get_global_id(0);
+	if ( x >= size ) {
+		return;
+	}
+
+	dst[x] = src0[x] * src1[x];
+}
+
+__kernel void mad_v_v_s( int size, __global float *dst, __global float *src, float scalar ) {
+	int x = get_global_id(0);
+	if ( x >= size ) {
+		return;
+	}
+
+	dst[x] += src[x] * scalar;
+}
+
+__kernel void dot_v_v( int size, __global float *dst, __global float *src0, __global float *src1, __local float *temp ) {
+	int g_x = get_global_id(0);
+	int l_x = get_local_id(0);
+	int b_x = get_group_id(0);
+
+	int work_size = get_global_size(0);
+
+	float sum = (float)( 0 );
+	for ( int i = g_x; i < size; i += work_size ) {
+		sum += src0[i] * src1[i];
+	}
+	temp[l_x] = sum;
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	reduce_local( temp );
+
+	if ( l_x == 0 ) { // FIXME
+		dst[b_x] = temp[0];
+	}
+}
+
+__kernel void diagonal( int size, __global float *M, __global float *A ) {
+	int x = get_global_id(0);
+	if ( x >= size ) {
+		return;
+	}
+
+	float a = A[x * size + x];
+	M[x] = ( a >1e-6f ? ( 1.0f / a ) : 1.0f );
+}
+
+__kernel void mul_m_v( int size, __global float *dst, __global float *M, __global float *src, __local float *temp ) {
+	int g_x = get_global_id(0);
+	int l_x = get_local_id(0);
+	int b_x = get_group_id(0);
+	
+	int work_size = get_local_size(0);
+
+	float sum = (float)( 0 );
+	for ( int i = l_x; i < size; i += work_size ) {
+		sum += M[b_x * size + i] * src[i];
+	}
+	temp[l_x] = sum;
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	reduce_local( temp );
+
+	if ( l_x == 0 ) { // FIXME
+		dst[b_x] = temp[0];
+	}
+}
+
+
+
+void icp_plane_lls( float3 src, float3 dst, float3 n, float16 *result_lo, float16 *result_hi ) {
+	float d = dot( dst - src, n );
+
+	float3 m = cross( src, n );
+
+	// A = Sum( ( m, n ) * ( m, n )' )
+	// x = ( w, t )
+	// b = Sum( ( m, n ) * d )
+
+	// d = dot( ( dst - src ), n )
+	// m = cross( src, n )
+
+	// P Q
+	//   R
+
+	*result_lo = (float16)(
+		// P
+		m * m,
+		m * m.yzx,
+		
+		// Q
+		m.x * n,
+		m.y * n,
+		m.z * n,
+		
+		// d^2
+		d * d
+	);
+
+	*result_hi = (float16)(
+		// R
+		n * n,
+		n * n.yzx,
+	
+		// b
+		m * d,
+		n * d,
+
+		// count
+		(float4)( 1.0f )
+	);
+}
+
+__kernel void point_transform( int dim, __global float3 *src_points, float16 xform ) {
+	int index = get_global_id(0);
+	if ( index >= dim ) {
+		return;
+	}
+
+	float3 src = src_points[index];
+
+	src_points[index] = mat4_mult_vec3( xform, src );
+}
+/*
+__kernel void depth_to_depth( int2 dim, __global ushort *src_d,  __global ushort *dst_d, float4 src_intr, float4 dst_intr, float16 src_extr, float16 dst_extr ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+	if ( x < 0 || y < 0 || x > dim.x - 1 || y > dim.y - 1 ) {
+		return;
+	}
+
+	int dst_index = x + y * dim.x;
+
+	float3 u;
+	u.xy = ( (float2)( x, y ) - dst_intr.zw ) / dst_intr.xy;
+	u.u.z = d;
+
+	float d = convert_float( src_d[index] ) * 0.001f;
+
+	if ( d < 0.2f || d > 10.0f ) {
+		dst_d[index] = 0;
+		return;
+	}
+
+	
+	float3 v = mat4_mult_vec3( dst_extr, mat4_mult_vec3( src_extr, (float3)( u * d, d ) ) );
+
+	dst_d[index] = convert_ushort( v.z * 1000.0f );
+}
+*/
+__kernel void depth_to_point( int2 dim, __global ushort *depth, __global float4 *points, float4 intr ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+	if ( x < 0 || y < 0 || x > dim.x - 1 || y > dim.y - 1 ) {
+		return;
+	}
+
+	int index = x + y * dim.x;
+
+	float d = convert_float( depth[index] ) * 0.001f;
+
+	if ( d < 0.5f || d > 13.0f ) {
+		points[index] = (float4)( 0.0f );
+		return;
+	}
+
+	float2 u = ( (float2)( x, y ) - intr.zw ) / intr.xy;
+
+	points[index] = (float4)( u * d, d, 1.0f );
+}
+
+__kernel void point_to_normal( int2 dim, __global float3 *points, __global float3 *normals ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+	if ( x <= 0 || y <= 0 || x >= dim.x - 1 || y >= dim.y - 1 ) {
+		return;
+	}
+
+	float3 e0 = points[( x + 1 ) + y * dim.x] - points[( x - 1 ) + y * dim.x];
+	float3 e1 = points[x + ( y + 1 ) * dim.x] - points[x + ( y - 1 ) * dim.x];
+
+	float3 n = cross( e0, e1 );
+	float len = length(n);
+	
+	normals[x + y * dim.x] = len > 0.0f ? normalize(n) : (float3)(0.0f);
+}
+
+__kernel void icp_plane_ki(
+	int dim, __global float16 *mat_lo, __global float16 *mat_hi, __global float3 *src_p, __global float3 *dst_p, __global float3 *src_ns, __global float3 *dst_n, float4 intr, float16 extr ) {
+	int src_index = get_global_id(0);
+	if ( src_index >= dim ) {
+		return;
+	}
+
+	float3 src = src_p[src_index];
+	if ( fabs(src.z) > 6.0f ) {
+		mat_lo[src_index] = (float16)( 0.0f );
+		mat_hi[src_index] = (float16)( 0.0f );
+		return;
+	}
+
+	src = mat4_mult_vec3( extr, src );
+	
+	float3 src_n = src_ns[src_index];
+	src_n = mat4_mult_dir3( extr, src_n );
+
+	// interpolate?
+	int2 u = convert_int2_rtn( src.xy / src.z * intr.xy + intr.zw );
+	if ( u.x < 0 || u.y < 0 || u.x >= 512 || u.y >= 424 ) {
+		mat_lo[src_index] = (float16)( 0.0f );
+		mat_hi[src_index] = (float16)( 0.0f );
+		return;
+	}
+
+	int dst_index = u.x + u.y * 512;
+	float3 dst = dst_p[dst_index];
+	if ( fabs(dst.z) > 6.0f ) {
+		mat_lo[src_index] = (float16)( 0.0f );
+		mat_hi[src_index] = (float16)( 0.0f );
+		return;
+	}
+
+	if ( length( src - dst ) > 0.1f ) {
+		mat_lo[src_index] = (float16)( 0.0f );
+		mat_hi[src_index] = (float16)( 0.0f );
+		return;
+	}
+
+	float3 n = dst_n[dst_index];
+	if ( length( n ) < 0.001f ) { //  || dot( src_n, n ) < 0.0f
+		mat_lo[src_index] = (float16)( 0.0f );
+		mat_hi[src_index] = (float16)( 0.0f );
+		return;
+	}
+
+	float16 r0, r1;
+	icp_plane_lls( src, dst, n, &r0, &r1 );
+
+	float2 v = src.xy / src.z;
+	float w = 1.0f / ( 1.0f + dot( v, v ) ); 
+	w *= w;
+//	w *= max( dot( src_n, n ), 0.0f );
+//	w /= pow( max( fabs(dst.z), 2.0f ), 2.0f );
+	w  = 1.0f;	
+	mat_lo[src_index] = r0 * w;
+	mat_hi[src_index] = r1 * w;
+}

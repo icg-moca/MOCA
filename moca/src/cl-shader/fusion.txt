@@ -1,0 +1,485 @@
+#define DIM (512.0f)
+#define BAND (1.80f / DIM * 3.0f)
+
+float3 mat4_mult_vec3( float16 M, float3 v ) {
+	return ( M.lo.lo * v.x + M.lo.hi * v.y + M.hi.lo * v.z + M.hi.hi ).xyz;
+}
+
+
+float3 mat4_mult_dir3( float16 M, float3 v ) {
+	return ( M.lo.lo * v.x + M.lo.hi * v.y + M.hi.lo * v.z ).xyz;
+}
+
+__kernel void point_transform( int dim, __global float3 *src_points, float16 xform ) {
+	int index = get_global_id(0);
+	if ( index >= dim ) {
+		return;
+	}
+
+	float3 src = src_points[index];
+
+	src_points[index] = mat4_mult_vec3( xform, src );
+}
+
+__kernel void depth_to_point( int2 dim, __global ushort *depth, __global float4 *points, float4 intr ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+	if ( x < 0 || y < 0 || x > dim.x - 1 || y > dim.y - 1 ) {
+		return;
+	}
+
+	int index = x + y * dim.x;
+
+	float d = convert_float( depth[index] ) * 0.001f;
+
+	if ( d < 0.2f || d > 5.0f ) {
+		points[index] = (float4)( 0.0f );
+		return;
+	}
+
+	float2 u = ( (float2)( x, y ) - intr.zw ) / intr.xy;
+
+	float3 v = (float3)( u * d, d );
+
+	points[index] = (float4)( v, 1.0f );
+}
+
+__kernel void point_to_normal( int2 dim, __global float4 *points, __global float3 *normals ) {
+	const int ss = 1;
+	
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+	if ( x < ss || y < ss || x >= dim.x - ss || y >= dim.y - ss) {
+		return;
+	}
+
+	if ( points[( x + ss ) + y * dim.x].w == 0.0f || points[( x - ss ) + y * dim.x].w == 0.0f || points[x + ( y + ss ) * dim.x].w == 0.0f || points[x + ( y - ss ) * dim.x].w == 0.0f ) {
+		normals[x + y * dim.x] = (float3)( 0.0f );
+		return;
+	}
+
+	float4 e0 = points[( x + ss ) + y * dim.x] - points[( x - ss ) + y * dim.x];
+	float4 e1 = points[x + ( y + ss ) * dim.x] - points[x + ( y - ss ) * dim.x];
+
+	float3 n = cross( e0.xyz, e1.xyz );
+	
+	normals[x + y * dim.x] = -normalize(n);
+}
+
+__kernel void clip_points( int num, __global float3 *points, __global float3 *normals, float16 M, float3 bmin, float3 bmax ) {
+	int x = get_global_id(0);
+	if ( x >= num ) {
+		return;
+	}
+
+	float3 v = points[x];
+	float3 n = normals[x];
+
+	v = mat4_mult_vec3( M, v );
+
+	if ( any( clamp( v, bmin, bmax ) != v ) || n.z >= 0.0f ) {
+		points[x] = (float3)(0.0f);
+	} else {
+		points[x] = v;
+	}
+
+	normals[x] = mat4_mult_dir3( M, n ) * 0.5f + 0.5f;
+}
+
+
+float2 ray_vs_aabb( float3 o, float3 dir, float2 e, float3 bmin, float3 bmax ) {
+	float3 a = ( bmin - o ) / dir;
+	float3 b = ( bmax - o ) / dir;
+
+	float3 s = min( a, b );
+	float3 t = max( a, b );
+
+	return (float2)(
+		max( max( s.x, s.y ), max( s.z, e.x ) ),
+		min( min( t.x, t.y ), min( t.z, e.y ) )
+	);
+}
+
+
+float get_depth( int2 depthSize, __global ushort *depth, float2 v) {
+	int2 p = convert_int2_rtn( v );
+
+	if ( p.x < 1 || p.y < 1 || p.x >= depthSize.x - 1 || p.y >= depthSize.y - 1 ) {
+		return 0.0f;
+	}
+
+	int index = p.x + p.y * depthSize.x;
+
+	float d00 = convert_float( depth[index] );
+
+//	return d00 * 0.001f;
+
+	float d10 = convert_float( depth[index + 1] );
+	float d01 = convert_float( depth[index + depthSize.x] );
+	float d11 = convert_float( depth[index + 1 + depthSize.x] );
+
+	if ( min( min( d00, d10 ), min( d01, d11 ) ) <= 0.0f ) {
+		return 0.0f;
+	}
+
+	float d0 = d00 + ( d10 - d00 ) * ( v.x - (float)(p.x) );
+	float d1 = d01 + ( d11 - d01 ) * ( v.x - (float)(p.x) );
+
+	float d = d0 + ( d1 - d0 ) * ( v.y - (float)(p.y) );
+
+	return d * 0.001f;
+}
+
+float3 get_normal( int2 mapSize, __global float3 *normalMap, float2 v) {
+	int2 p = convert_int2_rtn( v );
+
+	if ( p.x < 0 || p.y < 0 || p.x >= mapSize.x || p.y >= mapSize.y ) {
+		return 0.0f;
+	}
+
+	int index = p.x + p.y * mapSize.x;
+
+	return normalMap[index];
+}
+
+__kernel void gen_tsdf( int3 dim, __global float2 *tsdf ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+	int z = get_global_id(2);
+
+	float3 p = (float3)( x, y, z );
+
+	tsdf[ x + y * dim.x + z * dim.x * dim.y ] = (float2)(BAND, 0.0f);
+	//tsdf[ x + y * dim.x + z * dim.x * dim.y ] = (float2)( length( p - 64.0f ) - 60.0f, 0.0f );
+}
+
+
+float ray_cast( float3 o, float3 dir, float2 e, __global float2 *volume, int3 volumeSize ) {
+	float2 last_v = (float2)(0.0);
+	float last_e = e.x;
+	for ( int i = 0; i < 1000; i++ ) {
+		if ( e.x >= e.y ) {
+			break;
+		}
+		
+		int3 p = clamp( convert_int3_rtn( o + dir * e.x ), (int3)( 0 ), volumeSize - 1 );
+
+		float2 vox = volume[ p.x + p.y * volumeSize.x + p.z * volumeSize.x * volumeSize.y ];
+
+		// ( 0.0 - lv ) / ( cv - lv ) = ( d - ld ) / ( cd - ld );
+		if ( vox.x * last_v.x < 0.0f ) {
+			e.x += fabs( vox.x );
+			e.x = -last_v.x / ( vox.x - last_v.x ) * ( e.x - last_e ) + last_e;
+			return e.x;
+		}
+
+		last_v = vox;
+		last_e = e.x;
+
+		float dist = fabs( vox.x );
+		
+		e.x += max( dist * 0.5f, 1.0f / DIM );
+	}
+
+	return e.y;
+}
+
+__kernel void vis_tsdf( int3 volumeSize, __global float2 *volume, float3 o, float3 bmin, float3 bmax ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+	int z = get_global_id(2);
+	int index = x + y * volumeSize.x + z * volumeSize.x * volumeSize.y;
+	float2 vox = volume[ index ];
+	if ( vox.y > 0.0 ) {
+		return;
+	}
+
+	// voxel center
+	float3 p = (float3)( x, y, z ) + 0.5f;
+
+	o = ( o - bmin ) / ( bmax - bmin ) * convert_float3( volumeSize );
+
+	float3 dir = p - o;
+	float len = length( dir );
+	dir /=  len;
+
+	float2 e = ray_vs_aabb( o, dir, (float2)( 0.0f, len ), (float3)(0.0f), convert_float3( volumeSize ) );
+
+	if ( ray_cast( o, dir, e, volume, volumeSize ) < e.y ) {
+		volume[ index ].x = -BAND;
+	}
+}
+
+__kernel void fuse_tsdf(
+	int3 volumeSize, __global float2 *volume, // volume
+	int numTiles, __global int3 *tiles,
+	int2 depthSize, __global ushort *depthMap, __global float3 *normals, __global float *dfMap, // depth image
+	float4 K, float16 M, // view
+	float3 bmin, float3 bmax // ROI
+) {
+	int id = get_global_id(0);
+
+	int tileIndex = id / ( 8 * 8 * 8 );
+	if ( tileIndex >= numTiles ) {
+		return;
+	}
+	int3 tileOffset = tiles[tileIndex] * 8;
+
+	int voxelIndex = id % ( 8 * 8 * 8 );
+
+	int x = tileOffset.x + voxelIndex % 8; voxelIndex /= 8;
+	int y = tileOffset.y + voxelIndex % 8; voxelIndex /= 8;
+	int z = tileOffset.z + voxelIndex;
+
+	int index = x + y * volumeSize.x + z * volumeSize.x * volumeSize.y;
+
+	// voxel center
+	float3 p = (float3)( x, y, z ) + 0.5f;
+
+	// volume -> world
+	p = p / convert_float3( volumeSize ) * ( bmax - bmin ) + bmin;
+
+	// world -> camera
+	p -= M.hi.hi.xyz;
+	p = (float3)( dot(p, M.lo.lo.xyz), dot(p, M.lo.hi.xyz), dot(p, M.hi.lo.xyz) );
+
+	// sight
+	float3 dir = normalize( p );
+
+	// camera -> image
+	float2 uv = p.xy / p.z * K.xy + K.zw;
+
+	// image : depth : bilinear
+	float depth = get_depth( depthSize, depthMap, uv );
+	if ( depth <= -0.05f ) {
+		return;
+	}
+
+	// image : normal
+	float3 n = get_normal( depthSize, normals, uv );
+	if (-n.z < 0.2f) {
+		return;
+	}
+
+	// back face
+	float dot_sight_n = dot( -dir, n );
+	if ( dot_sight_n < 0.05f ) {
+		return;
+	}
+	dot_sight_n = max( dot_sight_n, 0.001f );
+
+	// read distance field
+	float2 vox = volume[ index ];
+
+	// estimate distance
+	float d = ( depth - p.z ) / dir.z * dot_sight_n;
+	if ( d < -BAND ) {
+		return;
+	}
+
+	// weight
+	float w_edge_dist = min( dfMap[ (int)(uv.x) + (int)(uv.y) * depthSize.x ] / 50.0f, 1.0f );
+
+	float w = smoothstep( 0.0f, 1.0f, w_edge_dist );
+	if ( w <= 0.00f ) {
+		return;
+	}
+	w *= dot_sight_n;
+	w /= ( dot( p.xy / p.z, p.xy / p.z ) + 0.001f );
+	w /= depth * depth;
+
+
+	// blend
+#if 1
+	vox.x = vox.x * vox.y + d * w;
+	vox.y = vox.y + w;
+	vox.x /= vox.y;
+#else
+	if ( w > vox.y ) {
+	vox.x = d;//(vox.x * vox.y + d * w) / (vox.y + w);
+	vox.y = max( vox.y, w );
+	}
+#endif
+
+	vox.x = min( vox.x, BAND );
+
+	// write distance field
+	volume[ index ] = vox;
+}
+
+float2 get_voxel( __read_only image3d_t volume, float3 v ) {
+	const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_LINEAR;
+	return read_imagef ( volume, sampler, (float4)(v, 0.0)).xy;
+}
+
+
+float3 get_grad( __read_only image3d_t volume, float3 v ) {
+	
+
+#if 1
+	float3 s = (float3)( 1.0f / DIM, 0.0f, 0.0f );
+	float dx = get_voxel( volume, v + s.xyz ).x - get_voxel( volume, v - s.xyz ).x;
+	float dy = get_voxel( volume, v + s.zxy ).x - get_voxel( volume, v - s.zxy ).x;
+	float dz = get_voxel( volume, v + s.yzx ).x - get_voxel( volume, v - s.yzx ).x;
+#else
+	float3 s = (float3)( 2.0f / DIM, 0.0f, 0.0f );
+	float d = get_voxel( volume, v ).x;
+	
+	float dx = get_voxel( volume, v + s.xyz ).x - d;
+	float dy = get_voxel( volume, v + s.zxy ).x - d;
+	float dz = get_voxel( volume, v + s.yzx ).x - d;
+#endif
+	return normalize( (float3)( dx, dy, dz ) );
+}
+
+float get_lap( __read_only image3d_t volume, float3 v ) {
+	v *= DIM;
+	v = floor( v );
+	v += 0.5f;
+	v /= DIM;
+	
+	float3 s = (float3)( 1.0f / DIM, 0.0f, 0.0f );
+	return 
+		get_voxel( volume, v + s.xyz ).x + get_voxel( volume, v - s.xyz ).x +
+		get_voxel( volume, v + s.zxy ).x + get_voxel( volume, v - s.zxy ).x +
+		get_voxel( volume, v + s.yzx ).x + get_voxel( volume, v - s.yzx ).x
+		- get_voxel( volume, v ).x * 6.0f;
+	;
+}
+
+float ray_cast_volume( float3 o, float3 dir, float2 e, __read_only image3d_t volume ) {
+	float2 last_v = (float2)(0.0);
+	float last_e = e.x;
+	for ( int i = 0; i < 1000; i++ ) {
+		if ( e.x >= e.y ) {
+			break;
+		}
+		
+		float2 vox = get_voxel( volume, o + dir * e.x );
+
+		// ( 0.0 - lv ) / ( cv - lv ) = ( d - ld ) / ( cd - ld );
+		if ( vox.x * last_v.x < 0.0f ) {
+			e.x = -last_v.x / ( vox.x - last_v.x ) * ( e.x - last_e ) + last_e;
+			return e.x;
+		}
+
+		last_v = vox;
+		last_e = e.x;
+		
+		e.x += max( fabs( vox.x ) * 0.5f, 1.0f / DIM );
+	}
+
+	return e.y;
+}
+
+/*
+__kernel void ray_cast_tsdf( int2 imageSize, __global float4 *image, float4 K, float16 M, int3 volumeSize, __read_only image3d_t volume, float3 bmin, float3 bmax ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+
+	if ( x >= imageSize.x || y >= imageSize.y ) {
+		return;
+	}
+
+	float2 u = (float2)( x, y ) + 0.5f;
+
+	u = ( u - K.zw ) / K.xy;
+
+	float3 dir = normalize( mat4_mult_dir3( M, (float3)( u, -1.0 ) ) );
+
+	float3 o = M.hi.hi.xyz;
+
+	o = ( o - bmin ) / ( bmax - bmin );
+
+	float2 e = ray_vs_aabb( o, dir, (float2)( 0.0f, 10000.0f ), (float3)(0.0f), (float3)(1.0f) );
+
+	if ( e.x >= e.y ) {
+		image[ x + y * imageSize.x ] = (float4)( 0.0f );
+		return;
+	}
+
+
+	float depth = ray_cast_volume( o, dir, e, volume );
+	if ( depth >= e.y ) {
+		image[ x + y * imageSize.x ] = (float4)( 1.0f, 0.0f, 0.0f, 1.0f );
+		return;
+	}
+
+	image[ x + y * imageSize.x ] = (float4)( get_grad( volume, ( o + dir * depth ) ) * 0.5f + 0.5f, 1.0f );
+}
+*/
+
+__kernel void ray_cast_tsdf( int2 imageSize, __global float4 *image, float4 K, float16 M, int3 volumeSize, __read_only image3d_t volume, float3 bmin, float3 bmax ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+
+	if ( x >= imageSize.x || y >= imageSize.y ) {
+		return;
+	}
+
+	float2 u = (float2)( x, y ) + 0.5f;
+
+	u = ( u - K.zw ) / K.xy;
+
+	float3 dir = normalize( mat4_mult_dir3( M, (float3)( u, -1.0 ) ) );
+
+	float3 o = M.hi.hi.xyz;
+
+	o = ( o - bmin ) / ( bmax - bmin );
+
+	float2 e = ray_vs_aabb( o, dir, (float2)( 0.0f, 10000.0f ), (float3)(0.0f), (float3)(1.0f) );
+
+	if ( e.x >= e.y ) {
+		image[ x + y * imageSize.x ] = (float4)( 0.0f );
+		return;
+	}
+
+
+	float depth = ray_cast_volume( o, dir, e, volume );
+	if ( depth >= e.y ) {
+		image[ x + y * imageSize.x ] = (float4)( 1.0f, 1.0f, 1.0f, 1.0f );
+		return;
+	}
+
+	image[ x + y * imageSize.x ] = (float4)( get_grad( volume, ( o + dir * depth ) ) * 0.5f + 0.5f, 1.0f );
+	//image[ x + y * imageSize.x ] = (float4)( fabs( get_lap( volume, ( o + dir * depth ) ) ) * 100.0f );
+}
+
+__kernel void ray_cast_tsdf_d( int2 imageSize, __global float *image, float4 K, float16 M, int3 volumeSize, __read_only image3d_t volume, float3 bmin, float3 bmax ) {
+	int x = get_global_id(0);
+	int y = get_global_id(1);
+
+	if ( x >= imageSize.x || y >= imageSize.y ) {
+		return;
+	}
+
+	float2 u = (float2)( x, y ) + 0.5f;
+
+	u = ( u - K.zw ) / K.xy;
+
+	float3 dir = normalize( mat4_mult_dir3( M, (float3)( u, 1.0 ) ) );
+
+	float3 o = M.hi.hi.xyz;
+
+	o = ( o - bmin ) / ( bmax - bmin );
+
+	float2 e = ray_vs_aabb( o, dir, (float2)( 0.0f, 10000.0f ), (float3)(0.0f), (float3)(1.0f) );
+
+	if ( e.x >= e.y ) {
+		image[ x + y * imageSize.x ] = 0.0f;
+		return;
+	}
+
+
+	float depth = ray_cast_volume( o, dir, e, volume );
+	if ( depth >= e.y ) {
+		image[ x + y * imageSize.x ] = 0.0f;
+		return;
+	}
+
+	if ( depth > 5.0f ) {
+		image[ x + y * imageSize.x ] = 0.0f;
+		return;
+	}
+	image[ x + y * imageSize.x ] = ( max( depth * dot( dir, M.hi.lo.xyz ) * ( bmax - bmin ).x, 0.0f ) );
+}

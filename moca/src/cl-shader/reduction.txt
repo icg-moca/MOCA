@@ -1,17 +1,12 @@
-#define T float
-#define LOCAL_GROUP_SIZE	(8)
+//#define T
 
-__kernel void reduction( int elem_num, int group_num, __global T *v ) {
+__kernel void reduction( int elem_num, int group_num, __local T *temp, __global T *v ) {
 	int global_id = get_global_id(0);
 	int local_id = get_local_id(0);
 	int group_id = get_group_id(0);
-	
-	int stride = LOCAL_GROUP_SIZE * group_num;
-	
-	__local T temp[LOCAL_GROUP_SIZE];
-	
-	for ( ; global_id - local_id < elem_num; elem_num = group_num )
-	{
+	int local_size = get_local_size(0);
+	int stride = local_size * group_num;
+
 	// load to local mem
 	T s = 0.0f;
 	for ( int i = global_id; i < elem_num; i += stride ) {
@@ -21,7 +16,7 @@ __kernel void reduction( int elem_num, int group_num, __global T *v ) {
 	barrier(CLK_LOCAL_MEM_FENCE);
 
 	// reduction within group
-	for ( int offset = LOCAL_GROUP_SIZE >> 1; offset > 0; offset >>= 1 ) {
+	for ( int offset = local_size >> 1; offset > 0; offset >>= 1 ) {
 		if ( local_id < offset ) {
 			temp[local_id] += temp[local_id + offset];
 		}
@@ -31,49 +26,4 @@ __kernel void reduction( int elem_num, int group_num, __global T *v ) {
 	if ( local_id == 0 ) {
 		v[group_id] = temp[0];
 	}
-	barrier(CLK_GLOBAL_MEM_FENCE);
-	}
-
 }
-
-/*
-__kernel void reduction( int elem_num, int group_num, __global T *v ) {
-	int global_id = get_global_id(0);
-	int local_id = get_local_id(0);
-	int group_id = get_group_id(0);
-	
-	__local T temp[LOCAL_GROUP_SIZE];
-	
-	int stride = LOCAL_GROUP_SIZE * group_num;
-
-	for ( ; elem_num > 1; elem_num = group_num ) {
-		group_num = min( group_num, ( elem_num + LOCAL_GROUP_SIZE - 1 ) / LOCAL_GROUP_SIZE );
-		if ( group_id >= group_num ) {
-			break;
-		}
-
-		// load to local mem
-		T s = 0.0f;
-		for ( int i = global_id; i < elem_num; i += stride ) {
-			s += v[i];
-		}
-		temp[local_id] = s;
-
-		barrier(CLK_LOCAL_MEM_FENCE);
-
-		// reduction within group
-		for ( int offset = LOCAL_GROUP_SIZE >> 1; offset > 0; offset >>= 1 ) {
-			if ( local_id < offset ) {
-				temp[local_id] += temp[local_id + offset];
-			}
-			barrier(CLK_LOCAL_MEM_FENCE);
-		}
-
-		if ( local_id == 0 ) {
-			v[group_id] = temp[0];
-		}
-
-		barrier(CLK_GLOBAL_MEM_FENCE);
-	}
-}
-*/

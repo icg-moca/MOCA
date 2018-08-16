@@ -581,6 +581,36 @@ namespace cl {
 		}
 	};
 
+	class Arg {
+	public :
+		size_t _size;
+		const void *_data;
+
+		Arg() : _size( 0 ), _data( 0 ) {
+		}
+
+		Arg( size_t size, const void *data = 0 ) : _size( size ), _data( data ) {
+		}
+		
+		template< class T >
+		Arg( const T &v ) {
+			_size = sizeof( T );
+			_data = &v;
+		}
+
+		template< class T >
+		Arg( const vector<T> &arg, int offset, int num ) {
+			_size = sizeof( T ) * num;
+			_data = arg.data() + offset;
+		}
+
+		template< class T >
+		Arg( const vector<T> &arg ) {
+			_size = sizeof( T ) * arg.size();
+			_data = arg.data();
+		}
+	};
+
 	//================
 	// Kernel
 	//================
@@ -613,35 +643,26 @@ namespace cl {
 			_kernel = clCreateKernel( program._program, name, &err ); Error( err, "clCreateKernel"  );
 		}
 
-		template< class T >
-		Kernel &SetArg( int index, const T &arg ) {
-			Error( clSetKernelArg( _kernel, index, sizeof( T ), ( const void* )&arg ), "clSetKernelArg" );
-			return *this;
-		}
-
 		Kernel &SetArg( int index, size_t size, const void *arg = NULL ) {
 			Error( clSetKernelArg( _kernel, index, size, arg ), "clSetKernelArg" );
 			return *this;
 		}
 
-		template< class T >
-		Kernel &SetArg( int index, const vector<T> &arg ) {
-			Error( clSetKernelArg( _kernel, index, arg.size() * sizeof( T ), ( const void* )arg.data() ), "clSetKernelArg" );
+		Kernel &SetArg( int index, const Arg &arg ) {
+			Error( clSetKernelArg( _kernel, index, arg._size, arg._data ), "clSetKernelArg" );
 			return *this;
 		}
 
 		public :
 		int _arg_index;
 
-		template< class T >
-		Kernel &operator<<( const T &arg ) {
+		Kernel &operator<<( const Arg &arg ) {
 			_arg_index = 0;
 			SetArg( _arg_index, arg );
 			return *this;
 		}
 
-		template< class T >
-		Kernel &operator,( const T &arg ) {
+		Kernel &operator,( const Arg &arg ) {
 			_arg_index++;
 			SetArg( _arg_index, arg );
 			return *this;
@@ -775,6 +796,21 @@ namespace cl {
 
 		void Finish( void ) {
 			clFinish( _cmd_queue );
+		}
+
+		void Kernel1D( Kernel &kernel, const size_t global_work_size, const size_t local_work_size) {
+			// FIXME : offset must currently be a NULL value
+			Error( clEnqueueNDRangeKernel( _cmd_queue, kernel._kernel, 1, 0, &global_work_size, &local_work_size, 0, 0, 0 ), "clEnqueueNDRangeKernel" );
+		}
+
+		void Kernel2D( Kernel &kernel, const size2 &global_work_size, const size2 &local_work_size) {
+			// FIXME : offset must currently be a NULL value
+			Error( clEnqueueNDRangeKernel( _cmd_queue, kernel._kernel, 2, 0, global_work_size.ptr(), local_work_size.ptr(), 0, 0, 0 ), "clEnqueueNDRangeKernel" );
+		}
+
+		void Kernel3D( Kernel &kernel, const size3 &global_work_size, const size3 &local_work_size ) {
+			// FIXME : offset must currently be a NULL value
+			Error( clEnqueueNDRangeKernel( _cmd_queue, kernel._kernel, 3, 0, global_work_size.ptr(), local_work_size.ptr(), 0, 0, 0 ), "clEnqueueNDRangeKernel" );
 		}
 
 		void NDRangeKernel1( Kernel &kernel, const size_t global_work_size, const size_t local_work_size) {

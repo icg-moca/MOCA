@@ -1,0 +1,163 @@
+__kernel void zero_v( int size, __global float *v ) {
+	int x = get_global_id(0);
+	if ( x >= size ) {
+		return;
+	}
+
+	v[x] = 0;
+}
+
+// src0 * src1 => dst
+__kernel void mul_v_v( int size, __global float *src0, __global float *src1, __global float *dst ) {
+	int x = get_global_id(0);
+	if ( x >= size ) {
+		return;
+	}
+
+	dst[x] = src0[x] * src1[x];
+}
+
+// src * scalar +=> dst
+__kernel void mad_v_s( int size, __global float *src, float scalar, __global float *dst ) {
+	int x = get_global_id(0);
+	if ( x >= size ) {
+		return;
+	}
+
+	dst[x] += src[x] * scalar;
+}
+
+void mad_mat_mult_v_local( int size, __global float *B, __global float *v, __local float *r ) {
+	for ( int row = 0; row < size; row++ ) {
+		float sum = 0.0f;
+		for ( int col = 0; col < size; col++ ) {
+			sum += B[col + row * size] * v[col];
+		}
+		r[row] += sum; // FIXME : +=
+	}
+}
+
+void mad_v_mult_mat_local( int size, __global float *B, __global float *v, __local float *r ) {
+	for ( int row = 0; row < size; row++ ) {
+		float sum = 0.0f;
+		for ( int col = 0; col < size; col++ ) {
+			sum += B[row + col * size] * v[col];
+		}
+		r[row] += sum; // FIXME : +=
+	}
+}
+
+void mad_mat_mult_v( int size, __global float *B, __global float *v, __global float *r ) {
+	for ( int row = 0; row < size; row++ ) {
+		float sum = 0.0f;
+		for ( int col = 0; col < size; col++ ) {
+			sum += B[col + row * size] * v[col];
+		}
+		r[row] += sum; // FIXME : +=
+	}
+}
+
+void mad_v_mult_mat( int size, __global float *B, __global float *v, __global float *r ) {
+	for ( int row = 0; row < size; row++ ) {
+		float sum = 0.0f;
+		for ( int col = 0; col < size; col++ ) {
+			sum += B[row + col * size] * v[col];
+		}
+		r[row] += sum; // FIXME : +=
+	}
+}
+
+// src * scalar +=> dst
+__kernel void mul_m_v(
+	int size, // gridSize
+	__global int *rowScan, __global int2 *blockInfos, __global float *blocks, // m
+	__global float *src, __global float *dst
+) {
+	int global_id = get_global_id(0);
+	int local_id = get_local_id(0);
+	int group_id = get_group_id(0);
+	int local_size = get_local_size(0);
+	
+	int row = group_id;
+	if ( row >= size ) {
+		return;
+	}
+
+	const int blockSize = 12;
+
+	__global float *ptr_r = dst + row * blockSize;
+
+	int start = rowScan[row];
+	int end = rowScan[row+1]; // column blocks
+
+	__local float sum[12 * 8];
+
+	for ( int i = 0; i < 12; i++ ) {
+		sum[i + 12 * local_id] = 0;
+	}
+		
+	int index = start + local_id;
+	for ( int index = start + local_id; index < end; index += local_size ) {
+		int2 info = blockInfos[index];
+		int col = info.x;
+		int blk = info.y;
+		
+		__global float *ptr_B = blocks + blk * blockSize * blockSize;
+		__global float *ptr_v = src + col * blockSize;
+
+		if ( col >= row ) {					
+			mad_mat_mult_v_local( blockSize, ptr_B, ptr_v, sum + 12 * local_id );
+		} else {
+			mad_v_mult_mat_local( blockSize, ptr_B, ptr_v, sum + 12 * local_id );
+		}
+	}
+	barrier(CLK_LOCAL_MEM_FENCE);
+
+	for ( int offset = local_size >> 1; offset > 0; offset >>= 1 ) {
+		if ( local_id < offset ) {
+			for ( int i = 0; i < 12; i++ ) {
+				sum[i + 12 * local_id] += sum[i + 12 * (local_id + offset)];
+			}
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+
+	if ( local_id == 0 ) {
+		for ( int i = 0; i < 12; i++ ) {
+			ptr_r[i] += sum[i];
+		}
+	}
+}
+
+// src * scalar +=> dst
+__kernel void mul_m_v2(
+	int size, // gridSize
+	__global int *rowScan, __global int2 *blockInfos, __global float *blocks, // m
+	__global float *src, __global float *dst
+) {
+	int row = get_global_id(0);
+	if ( row >= size ) {
+		return;
+	}
+
+	const int blockSize = 12;
+
+	__global float *ptr_r = dst + row * blockSize;
+
+	int start = rowScan[row];
+	int end = rowScan[row+1]; // column blocks
+	for ( int i = start; i < end; i++ ) {
+		int2 info = blockInfos[i];
+		int col = info.x;
+		int blk = info.y;
+		
+		__global float *ptr_B = blocks + blk * blockSize * blockSize;
+		__global float *ptr_v = src + col * blockSize;
+
+		if ( col >= row ) {					
+			mad_mat_mult_v( blockSize, ptr_B, ptr_v, ptr_r );
+		} else {
+			mad_v_mult_mat( blockSize, ptr_B, ptr_v, ptr_r );
+		}
+	}
+}

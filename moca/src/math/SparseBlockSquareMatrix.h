@@ -1,6 +1,3 @@
-#ifndef sparseBlockSquareMatrix_h
-#define sparseBlockSquareMatrix_h
-
 template<int blockSize>
 class SparseBlockSquareMatrix {
 public :
@@ -135,6 +132,8 @@ public :
 		return diag;
 	}
 
+
+
 	Eigen::VectorXf operator*( const Eigen::VectorXf &v ) const {
 		Eigen::VectorXf r = Eigen::VectorXf::Zero( size() );
 
@@ -151,9 +150,9 @@ public :
 				float *ptr_r = &r[row * blockSize];
 
 				if ( col >= row ) {					
-					mad_mat_mult_v( gridSize, ptr_B, ptr_v, ptr_r );
+					mad_mat_mult_v( blockSize, ptr_B, ptr_v, ptr_r );
 				} else {
-					mad_v_mult_mat( gridSize, ptr_B, ptr_v, ptr_r );
+					mad_v_mult_mat( blockSize, ptr_B, ptr_v, ptr_r );
 				}
 			}
 		}
@@ -183,5 +182,3 @@ public :
 		return *this;
 	}
 };
-
-#endif
