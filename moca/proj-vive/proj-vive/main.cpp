@@ -88,41 +88,6 @@ void RenderCompanionWindow(VIVE_HMD &vive) {
 	glUseProgram(0);
 }
 
-void DrawScene2D() {
-	{
-		//glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_TRANSFORM_BIT);
-		glDisable(GL_DEPTH_TEST);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glEnableClientState(GL_COLOR_ARRAY);
-		// Setup viewport, orthographic projection matrix
-		glViewport(0, 0, (GLsizei)screenWidth, (GLsizei)screenHeight);
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glOrtho(0.0f, screenWidth, 0.0f, screenHeight, -1.0f, +1.0f);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-
-		// Draw a triangle at 0.5 z
-		glBegin(GL_TRIANGLES);
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(50.5, 50.5, 0.5);
-		glVertex3f(550.5, 50.5, 0.5);
-		glVertex3f(550.0, 150.5, 0.5);
-		glEnd();
-
-		glDisableClientState(GL_COLOR_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
-		glPopMatrix();
-		//glPopAttrib();
-	}
-}
 
 void DrawGroundScene3D(float *vive_to_eye) {
 	{
@@ -198,27 +163,12 @@ void RenderGlobalScene(float *vive_to_eye, GLuint fbo) {
 //=========================================================================
 void Render(void)
 {
-	// Get Back to the Modelview
-	//glClearColor(0.15f, 0.15f, 0.18f, 1.0f);
-	//glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-	//glEnable(GL_DEPTH_TEST);
 
-	if (1) {
-		vive.DrawToHMD(RenderGlobalScene);
-	}
+	vive.DrawToHMD(RenderGlobalScene);
+	
 	if (1) {
 		RenderCompanionWindow(vive);
-	}
-	if (0) {
-		// draw 2D scene
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		DrawScene2D();
-		glMatrixMode(GL_MODELVIEW);
-		glPopMatrix();
 	}
 
 	glFlush();
@@ -294,56 +244,12 @@ bool keyboardEvent(unsigned char nChar, int nX, int nY)
 	return true;
 }
 
-void KeyboardSpecial(int key, int x, int y)
-{
-
-}
-
 void keyboardCallback(unsigned char nChar, int x, int y)
 {
 	if (keyboardEvent(nChar, x, y))
 	{
 		glutPostRedisplay();
 	}
-}
-
-bool mouseEvent(int button, int state, int x, int y)
-{
-	//if (state == GLUT_DOWN && (button == GLUT_LEFT_BUTTON))
-	//if (state == GLUT_DOWN && (button == GLUT_RIGHT_BUTTON))
-	//if (state == GLUT_DOWN && (button == GLUT_MIDDLE_BUTTON))
-	return true;
-}
-
-void MouseWheel(int button, int dir, int x, int y)
-{
-
-	if (dir > 0)
-	{
-
-	}
-	else if (dir < 0)
-	{
-
-	}
-}
-
-void MouseCallback(int button, int state, int x, int y)
-{
-	if (mouseEvent(button, state, x, y))
-	{
-
-	}
-}
-
-void MouseDragCallback(int x, int y)
-{
-	glutPostRedisplay();
-}
-
-void MouseMoveCallback(int x, int y)
-{
-	glutPostRedisplay();
 }
 
 //=========================================================================
@@ -478,11 +384,6 @@ void main(int argc, char **argv) {
 	glutReshapeFunc(Reshape);
 	glutIdleFunc(Update);
 	glutKeyboardFunc(keyboardCallback);
-	glutSpecialFunc(KeyboardSpecial);
-	glutMouseFunc(MouseCallback);
-	glutMouseWheelFunc(MouseWheel);
-	glutMotionFunc(MouseDragCallback);
-	glutPassiveMotionFunc(MouseMoveCallback);
 
 	glutMainLoop();
 

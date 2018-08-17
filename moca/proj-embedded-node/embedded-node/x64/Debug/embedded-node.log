@@ -1,0 +1,483 @@
+﻿  main.cpp
+D:\Repos\Fusion\moca\dependency\flann/util/saving.h(92): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/util/logger.h(66): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(417): warning C4267: 'argument' : conversion from 'size_t' to 'flann::lsh::FeatureIndex', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(425): warning C4267: 'argument' : conversion from 'size_t' to 'flann::lsh::FeatureIndex', possible loss of data
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(17): warning C4267: 'initializing' : conversion from 'size_t' to 'const int', possible loss of data
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(104): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(114): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(116): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(123): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(124): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(125): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(327): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(260): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(258) : while compiling class template member function 'void flann::lsh::LshTable<ElementType>::initialize(size_t)'
+          with
+          [
+              ElementType=unsigned char
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(329) : see reference to class template instantiation 'flann::lsh::LshTable<ElementType>' being compiled
+          with
+          [
+              ElementType=unsigned char
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(111): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(84) : while compiling class template member function 'int flann::NNIndex<Distance>::knnSearch(const flann::Matrix<T> &,flann::Matrix<int> &,flann::Matrix<T> &,size_t,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann\flann.hpp(124) : see reference to class template instantiation 'flann::NNIndex<Distance>' being compiled
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann\flann.hpp(123) : while compiling class template member function 'flann::Index<Distance>::~Index(void)'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(203) : see reference to class template instantiation 'flann::Index<Distance>' being compiled
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(120): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(189): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(161) : while compiling class template member function 'int flann::NNIndex<Distance>::knnSearch(const flann::Matrix<T> &,std::vector<_Ty> &,std::vector<std::vector<float>> &,size_t,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float,
+              _Ty=std::vector<int>
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(201): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(249): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(239) : while compiling class template member function 'int flann::NNIndex<Distance>::radiusSearch(const flann::Matrix<T> &,flann::Matrix<int> &,flann::Matrix<T> &,float,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(257): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(270): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(286): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(335): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(321) : while compiling class template member function 'int flann::NNIndex<Distance>::radiusSearch(const flann::Matrix<T> &,std::vector<_Ty> &,std::vector<std::vector<float>> &,float,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float,
+              _Ty=std::vector<int>
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(349): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(362): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(407): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(393) : while compiling class template member function 'void flann::KNNResultSet2<DistanceType>::copy(int *,DistanceType *,size_t,bool)'
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(106) : see reference to class template instantiation 'flann::KNNResultSet2<DistanceType>' being compiled
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(84) : while compiling class template member function 'int flann::NNIndex<Distance>::knnSearch(const flann::Matrix<T> &,flann::Matrix<int> &,flann::Matrix<T> &,size_t,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(186): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(183) : while compiling class template member function 'void flann::KNNSimpleResultSet<DistanceType>::copy(int *,DistanceType *,size_t,bool)'
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(115) : see reference to class template instantiation 'flann::KNNSimpleResultSet<DistanceType>' being compiled
+          with
+          [
+              DistanceType=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(509): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(495) : while compiling class template member function 'void flann::RadiusResultSet<DistanceType>::copy(int *,DistanceType *,size_t,bool)'
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(265) : see reference to class template instantiation 'flann::RadiusResultSet<DistanceType>' being compiled
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(239) : while compiling class template member function 'int flann::NNIndex<Distance>::radiusSearch(const flann::Matrix<T> &,flann::Matrix<int> &,flann::Matrix<T> &,float,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(631): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(617) : while compiling class template member function 'void flann::KNNRadiusResultSet<DistanceType>::copy(int *,DistanceType *,size_t,bool)'
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(281) : see reference to class template instantiation 'flann::KNNRadiusResultSet<DistanceType>' being compiled
+          with
+          [
+              DistanceType=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann\flann.hpp(78): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+          D:\Repos\Fusion\moca\dependency\flann\flann.hpp(114) : see reference to function template instantiation 'flann::NNIndex<Distance> *flann::load_saved_index<Distance>(const flann::Matrix<T> &,const std::string &,Distance)' being compiled
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann\flann.hpp(107) : while compiling class template member function 'flann::Index<Distance>::Index(const flann::Matrix<T> &,const flann::IndexParams &,Distance)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(117): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(115) : while compiling class template member function 'void flann::KDTreeSingleIndex<Distance>::buildIndex(void)'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(96) : see reference to class template instantiation 'flann::KDTreeSingleIndex<Distance>' being compiled
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(102) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>::needs_kdtree_distance<T>' being compiled
+          with
+          [
+              Index=flann::KDTreeSingleIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType,
+              T=flann::KDTreeSingleIndex<flann::L2<float>>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(138) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>' being compiled
+          with
+          [
+              Index=flann::KDTreeSingleIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType
+          ]
+          D:\Repos\Fusion\moca\dependency\flann\flann.hpp(118) : see reference to function template instantiation 'flann::NNIndex<Distance> *flann::create_index_by_type<Distance>(const flann::Matrix<T> &,const flann::IndexParams &,const Distance &)' being compiled
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(197): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(196) : while compiling class template member function 'int flann::KDTreeSingleIndex<Distance>::usedMemory(void) const'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/hierarchical_clustering_index.h(355): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/hierarchical_clustering_index.h(348) : while compiling class template member function 'void flann::HierarchicalClusteringIndex<Distance>::buildIndex(void)'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(96) : see reference to class template instantiation 'flann::HierarchicalClusteringIndex<Distance>' being compiled
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(102) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>::needs_kdtree_distance<T>' being compiled
+          with
+          [
+              Index=flann::HierarchicalClusteringIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType,
+              T=flann::HierarchicalClusteringIndex<flann::L2<float>>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(161) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>' being compiled
+          with
+          [
+              Index=flann::HierarchicalClusteringIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/hierarchical_clustering_index.h(358): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/hierarchical_clustering_index.h(422): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/hierarchical_clustering_index.h(417) : while compiling class template member function 'void flann::HierarchicalClusteringIndex<Distance>::findNeighbors(flann::ResultSet<DistanceType> &,const float *,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              DistanceType=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(171): warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(170) : while compiling class template member function 'int flann::LshIndex<Distance>::usedMemory(void) const'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(96) : see reference to class template instantiation 'flann::LshIndex<Distance>' being compiled
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(102) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>::needs_kdtree_distance<T>' being compiled
+          with
+          [
+              Index=flann::LshIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType,
+              T=flann::LshIndex<flann::L2<float>>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(164) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>' being compiled
+          with
+          [
+              Index=flann::LshIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(202): warning C4267: 'argument' : conversion from 'size_t' to 'unsigned int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(193) : while compiling class template member function 'int flann::LshIndex<Distance>::knnSearch(const flann::Matrix<T> &,flann::Matrix<int> &,flann::Matrix<T> &,size_t,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(206): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(207): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(211): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(216): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(243): warning C4267: 'argument' : conversion from 'size_t' to 'unsigned int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(236) : while compiling class template member function 'int flann::LshIndex<Distance>::knnSearch(const flann::Matrix<T> &,std::vector<_Ty> &,std::vector<std::vector<float>> &,size_t,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float,
+              _Ty=std::vector<int>
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(250): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(251): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(255): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(263): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(500): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(495) : while compiling class template member function 'float flann::KDTreeSingleIndex<Distance>::computeInitialDistances(const float *,std::vector<_Ty> &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              _Ty=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(504): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kmeans_index.h(778): warning C4267: '+=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/kmeans_index.h(644) : while compiling class template member function 'void flann::KMeansIndex<Distance>::computeClustering(flann::KMeansIndex<Distance>::KMeansNode *,int *,int,int,int)'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(96) : see reference to class template instantiation 'flann::KMeansIndex<Distance>' being compiled
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(102) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>::needs_kdtree_distance<T>' being compiled
+          with
+          [
+              Index=flann::KMeansIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType,
+              T=flann::KMeansIndex<flann::L2<float>>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(152) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>' being compiled
+          with
+          [
+              Index=flann::KMeansIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/hierarchical_clustering_index.h(489): warning C4244: 'initializing' : conversion from '__int64' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/hierarchical_clustering_index.h(486) : while compiling class template member function 'void flann::HierarchicalClusteringIndex<Distance>::save_tree(FILE *,flann::HierarchicalClusteringIndex<Distance>::Node *,int)'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(408): warning C4267: 'argument' : conversion from 'size_t' to 'flann::lsh::BucketKey', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(399) : while compiling class template member function 'void flann::LshIndex<Distance>::getNeighbors(const float *,flann::ResultSet<DistanceType> &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              DistanceType=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(813): warning C4267: 'argument' : conversion from 'size_t' to 'unsigned int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(810) : while compiling class template member function 'void flann::KNNUniqueResultSet<DistanceType>::addPoint(DistanceType,size_t)'
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(202) : see reference to class template instantiation 'flann::KNNUniqueResultSet<DistanceType>' being compiled
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(193) : while compiling class template member function 'int flann::LshIndex<Distance>::knnSearch(const flann::Matrix<T> &,flann::Matrix<int> &,flann::Matrix<T> &,size_t,const flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(750): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(749) : while compiling class template member function 'void flann::UniqueResultSet<DistanceType>::copy(int *,DistanceType *,int,bool)'
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(794) : see reference to class template instantiation 'flann::UniqueResultSet<DistanceType>' being compiled
+          with
+          [
+              DistanceType=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(287): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/result_set.h(284) : while compiling class template member function 'void flann::KNNResultSet<DistanceType>::copy(int *,DistanceType *,size_t,bool)'
+          with
+          [
+              DistanceType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(211) : see reference to class template instantiation 'flann::KNNResultSet<DistanceType>' being compiled
+          with
+          [
+              DistanceType=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(383): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(374) : while compiling class template member function 'void flann::KDTreeSingleIndex<Distance>::middleSplit(int *,int,int &,int &,float &,const std::vector<_Ty> &)'
+          with
+          [
+              Distance=flann::L2<float>,
+              _Ty=flann::KDTreeSingleIndex<flann::L2<float>>::Interval
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(400): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(404): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(164): warning C4267: 'initializing' : conversion from 'size_t' to 'flann::lsh::BucketKey', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(162) : while compiling class template member function 'void flann::lsh::LshTable<ElementType>::add(unsigned int,const ElementType *)'
+          with
+          [
+              ElementType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(113) : see reference to class template instantiation 'flann::lsh::LshTable<ElementType>' being compiled
+          with
+          [
+              ElementType=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(109) : while compiling class template member function 'void flann::LshIndex<Distance>::buildIndex(void)'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+D:\Repos\Fusion\moca\dependency\flann/util/sampling.h(65): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/autotuned_index.h(423) : see reference to function template instantiation 'flann::Matrix<T> flann::random_sample<float>(const flann::Matrix<T> &,size_t)' being compiled
+          with
+          [
+              T=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/autotuned_index.h(407) : while compiling class template member function 'flann::IndexParams flann::AutotunedIndex<Distance>::estimateBuildParams(void)'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(96) : see reference to class template instantiation 'flann::AutotunedIndex<Distance>' being compiled
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(102) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>::needs_kdtree_distance<T>' being compiled
+          with
+          [
+              Index=flann::AutotunedIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType,
+              T=flann::AutotunedIndex<flann::L2<float>>
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/all_indices.h(158) : see reference to class template instantiation 'flann::valid_combination<Index,Distance,ElementType>' being compiled
+          with
+          [
+              Index=flann::AutotunedIndex,
+              Distance=flann::L2<float>,
+              ElementType=ElementType
+          ]
+D:\Repos\Fusion\moca\dependency\flann/util/sampling.h(46): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/autotuned_index.h(425) : see reference to function template instantiation 'flann::Matrix<T> flann::random_sample<float>(flann::Matrix<T> &,long,bool)' being compiled
+          with
+          [
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(96): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/kdtree_single_index.h(84) : while compiling class template member function 'flann::KDTreeSingleIndex<Distance>::KDTreeSingleIndex(const flann::Matrix<T> &,const flann::IndexParams &,Distance)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(97): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/lsh_index.h(89) : while compiling class template member function 'flann::LshIndex<Distance>::LshIndex(const flann::Matrix<T> &,const flann::IndexParams &,Distance)'
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\xutility(2239): warning C4996: 'std::_Copy_impl': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\xutility(2224) : see declaration of 'std::_Copy_impl'
+          D:\Repos\Fusion\moca\dependency\flann/util/sampling.h(73) : see reference to function template instantiation '_OutIt std::copy<T*,T*>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=float *,
+              T=float,
+              _InIt=float *
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/autotuned_index.h(423) : see reference to function template instantiation 'flann::Matrix<T> flann::random_sample<float>(const flann::Matrix<T> &,size_t)' being compiled
+          with
+          [
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/nn/ground_truth.h(60): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/nn/ground_truth.h(91) : see reference to function template instantiation 'void flann::find_nearest<Distance>(const flann::Matrix<T> &,float *,int *,int,int,Distance)' being compiled
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/autotuned_index.h(432) : see reference to function template instantiation 'void flann::compute_ground_truth<Distance>(const flann::Matrix<T> &,const flann::Matrix<T> &,flann::Matrix<int> &,int,Distance)' being compiled
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+D:\Repos\Fusion\moca\dependency\flann/nn/ground_truth.h(65): warning C4267: '=' : conversion from 'size_t' to 'int', possible loss of data
+D:\Repos\Fusion\moca\dependency\flann/nn/index_testing.h(120): warning C4267: 'argument' : conversion from 'size_t' to 'int', possible loss of data
+          D:\Repos\Fusion\moca\dependency\flann/nn/index_testing.h(175) : see reference to function template instantiation 'float flann::search_with_ground_truth<Distance>(flann::NNIndex<Distance> &,const flann::Matrix<T> &,const flann::Matrix<T> &,const flann::Matrix<int> &,int,int,float &,float &,const Distance &,int)' being compiled
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/autotuned_index.h(520) : see reference to function template instantiation 'float flann::test_index_precision<Distance>(flann::NNIndex<Distance> &,const flann::Matrix<T> &,const flann::Matrix<T> &,const flann::Matrix<int> &,float,int &,const Distance &,int,int)' being compiled
+          with
+          [
+              Distance=flann::L2<float>,
+              T=float
+          ]
+          D:\Repos\Fusion\moca\dependency\flann/algorithms/autotuned_index.h(485) : while compiling class template member function 'float flann::AutotunedIndex<Distance>::estimateSearchParams(flann::SearchParams &)'
+          with
+          [
+              Distance=flann::L2<float>
+          ]
+  embedded-node.vcxproj -> D:\Repos\Fusion\moca\proj-embedded-node\x64\Debug\embedded-node.exe
