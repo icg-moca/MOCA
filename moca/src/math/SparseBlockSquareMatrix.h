@@ -123,7 +123,7 @@ public :
 		// block buffer
 		m_blocks.resize( blockIndex * m_blockSize *  m_blockSize, 0 );
 
-		std::cout << m_blocks.size() << std::endl;
+	//	std::cout << m_blocks.size() << std::endl;
 	}
 
 	Eigen::VectorXf diagonal( void ) const {

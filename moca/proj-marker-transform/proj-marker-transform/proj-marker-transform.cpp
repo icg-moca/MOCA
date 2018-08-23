@@ -18,7 +18,62 @@
 
 #include <math/func.h>
 #include <math/matrix.h>
+#include <import.h>
+
 #include <math/SparseBlockSquareMatrix.h>
+
+Eigen::VectorXf pcg( const SparseBlockSquareMatrix &A, const Eigen::VectorXf &b, int maxIters, float threshold = 1e-4 ) {
+	Eigen::VectorXf M = A.diagonal();
+	for ( int i = 0; i < M.rows(); i++ ) {
+		if ( fabs( M[i] ) > threshold ) {
+			M[i] = 1.0f / M[i];
+		} else {
+			M[i] = 1.0f;
+		}
+	}
+
+	Eigen::VectorXf x = Eigen::VectorXf::Zero(A.size());
+	Eigen::VectorXf p = Eigen::VectorXf::Zero(A.size());
+	Eigen::VectorXf r = b; // b - A * x
+
+	int m_numIters = 0;
+	clock_t begin = clock();
+	for ( int i = 0; i < maxIters; i++ ) {
+		m_numIters++;
+
+		Eigen::VectorXf Mr = M.array() * r.array();
+		float rMr = r.dot( Mr );
+		if ( rMr < threshold * A.size() ) {
+		//	break;
+		}
+		if ( threshold <= 0 && rMr < 1e-6 ) {
+			rMr = 0.0f;
+		} else {
+			rMr = 1.0f / rMr;
+		}
+		p += Mr * rMr;
+
+		Eigen::VectorXf Ap = A * p;
+		float pAp = p.dot( Ap );
+		if ( threshold <= 0 && pAp < 1e-6 ) {
+			pAp = 0.0f;
+		} else {
+			pAp = 1.0f / pAp;
+		}
+		x +=  p * pAp;
+		r -= Ap * pAp;
+
+		float rme = sqrt( r.dot( r ) / A.size() );
+		if ( rme < 1e-6 ) {
+			break;
+		}
+	}
+	clock_t end = clock();
+	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+	printf( "pcg cpu (ms) : %.3f : %.3f : %d\n", time_spent * 1000, time_spent * 1000 / m_numIters, m_numIters );
+
+	return x;
+}
 
 float icp_point_to_point_svd(
 	const std::vector< Eigen::Vector3f > &src_points,
@@ -117,6 +172,8 @@ void EvalLinearSystem( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eig
 			if ( i == j ) {
 				continue;
 			}
+
+			
 			Eigen::Vector3f Mi[4], Mj[4];
 			Mi[0] = x.block( i * 12 + 0 * 3, 0, 3, 1 );
 			Mi[1] = x.block( i * 12 + 1 * 3, 0, 3, 1 );
@@ -131,6 +188,11 @@ void EvalLinearSystem( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eig
 			// Ri * ( gj - gi ) - ( gj - gi ) - ( tj - ti )
 
 			Eigen::Vector3f dg = src[j] - src[i];
+
+			if ( dg.norm() > 0.150 ) {
+				continue;
+			}
+
 			Eigen::Vector3f dt = Mj[3] - Mi[3];
 
 			Eigen::Vector3f r = ( dg[0] * Mi[0] + dg[1] * Mi[1] + dg[2] * Mi[2] ) - dg - dt;
@@ -151,12 +213,47 @@ void EvalLinearSystem( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eig
 	printf( "E-smooth : %f\n", E );
 }
 
-int _tmain(int argc, _TCHAR* argv[])
-{
-	int size = 3;
+
+bool read_text_file( const char *path, std::vector<std::vector<Eigen::Vector3f>> &poses ) {
+	FILE *fp = fopen( path, "r" );
+	if ( !fp ) {
+		printf( "failed to read text file: %s\n", path );
+		return false;
+	}
+
+	int frame = 0;
+	while( fscanf( fp, "%d", &frame ) == 1 ) {
+		frame -= 1;
+		if ( frame != poses.size() ) {
+			break;
+		}
+		printf( "read %d\n", frame );
+		
+		int subFrame = 0;
+		fscanf( fp, "%d", &subFrame );
+
+		poses.push_back( std::vector<Eigen::Vector3f>( 41 ) );
+		for ( int i = 0; i < 41; i++ ) {
+			float x, y, z;
+			fscanf( fp, "%f", &x );
+			fscanf( fp, "%f", &y );
+			fscanf( fp, "%f", &z );
+		//	printf( "%f %f %f\n", x, y, z);
+			poses[frame][i][0] = x * 0.001f;
+			poses[frame][i][1] = y * 0.001f;
+			poses[frame][i][2] = z * 0.001f;
+		}
+	}
+
+	fclose( fp );
+	return true;
+}
+
+void test_gen_data( void ) {
+	int size = 8;
 	
 	std::vector<Eigen::Vector3f> src( size ), dst( size );
-
+	
 	// gen transform
 	Eigen::Vector3f euler;
 	euler << 20, 50, -45;
@@ -215,6 +312,84 @@ int _tmain(int argc, _TCHAR* argv[])
 		EvalLinearSystem( size, JtJ, Jtr, x, src, dst, E );
 		//std::cout << Jtr;
 		x -= JtJ.fullPivHouseholderQr().solve( Jtr );
+	}
+}
+
+class Timer {
+public :
+	clock_t begin, end;
+
+	void Start( void ) {
+		begin = clock();
+	}
+
+	void Pause( void ) {
+		end = clock();
+	}
+
+	void Print( const char *id ) {
+		double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+		printf( "time : %s : %f\n", id, time_spent );
+	}
+};
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	std::vector<std::vector<Eigen::Vector3f>> poses;
+		
+	read_text_file( "New Session 0103.csv", poses );
+	
+	// rigid transform
+	
+	Timer timer;
+	
+	
+	Eigen::Matrix3f out_rot = Eigen::Matrix3f::Identity();
+	Eigen::Vector3f out_t = Eigen::Vector3f::Zero();;
+	{
+		timer.Start();
+		float rme = icp_point_to_point_svd( poses[10], poses[600], out_rot, out_t );
+		timer.Pause();
+		timer.Print( "ICP" );
+
+		std::cout << "Result" << std::endl;
+		std::cout << out_rot << std::endl;
+		std::cout << out_t << std::endl;
+		std::cout << "rme : " << rme << std::endl;
+		std::cout << std::endl;
+	}
+	
+
+	int size = poses[0].size();
+
+	Eigen::MatrixXf JtJ = Eigen::MatrixXf::Identity( 12 * size, 12 * size ) * 1e-6f;
+	Eigen::VectorXf Jtr = Eigen::VectorXf::Zero( 12 * size );
+	Eigen::VectorXf x( 12 * size );
+	float E = 0.0f;
+
+	init_affine_transforms( size, x, out_rot, poses[10], poses[600] );
+
+	for ( int i = 0; i < 7; i++ ) {
+		JtJ = Eigen::MatrixXf::Identity( 12 * size, 12 * size ) * 1e-3f;
+		Jtr = Eigen::VectorXf::Zero( 12 * size );
+		E = 0.0f;
+	
+
+		timer.Start();
+		EvalLinearSystem( size, JtJ, Jtr, x, poses[10], poses[300], E );
+		timer.Pause();
+		timer.Print( "Jacobian" );
+
+		//std::cout << Jtr;
+		timer.Start();
+		SparseBlockSquareMatrix B;
+		B.createFromDenseMatrix( JtJ, 12 );
+	
+		x -= pcg( B, Jtr, 100, 1e-6 );
+
+		//x -= JtJ.fullPivHouseholderQr().solve( Jtr );
+		timer.Pause();
+		timer.Print( "Solve" );
 	}
 
 	return 0;

@@ -41,9 +41,6 @@ Eigen::VectorXf pcg( const SparseBlockSquareMatrix &A, const Eigen::VectorXf &b,
 
 		Eigen::VectorXf Mr = M.array() * r.array();
 		float rMr = r.dot( Mr );
-		if ( rMr < threshold * A.size() ) {
-			break;
-		}
 		if ( threshold <= 0 && rMr < 1e-6 ) {
 			rMr = 0.0f;
 		} else {
@@ -61,10 +58,10 @@ Eigen::VectorXf pcg( const SparseBlockSquareMatrix &A, const Eigen::VectorXf &b,
 		x +=  p * pAp;
 		r -= Ap * pAp;
 
-		//float rme = sqrt( r.dot( r ) / A.size() );
-		//if ( rme < 1e-6 ) {
-		//	break;
-		//}
+		float rme = sqrt( r.dot( r ) / A.size() );
+		if ( rme < 1e-6 ) {
+			break;
+		}
 	}
 	clock_t end = clock();
 	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
