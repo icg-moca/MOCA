@@ -1,4 +1,4 @@
-﻿Build started 8/22/2018 9:08:15 PM.
+﻿Build started 8/23/2018 5:46:11 PM.
      1>Project "C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\proj-marker-transform.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -15,20 +15,24 @@
      1>c:\users\admin13302\documents\github\fusion\moca\src\math\sparseblocksquarematrix.h(75): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\admin13302\documents\github\fusion\moca\src\math\sparseblocksquarematrix.h(104): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\admin13302\documents\github\fusion\moca\src\math\sparseblocksquarematrix.h(106): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(98): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(218): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(97): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(173): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(212): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(225): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(219): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(227): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(232): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
      1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(233): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(238): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(234): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(239): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(240): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
-     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(388): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(365): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(366): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(374): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\admin13302\documents\github\fusion\moca\proj-marker-transform\proj-marker-transform\proj-marker-transform.cpp(394): warning C4305: 'argument' : truncation from 'double' to 'float'
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -48,4 +52,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:18.97
+Time Elapsed 00:00:19.19

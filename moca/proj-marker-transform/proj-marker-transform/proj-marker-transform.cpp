@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 
-#include "stdafx.h"
 
 #include <vector>
 #include <iostream>
@@ -121,7 +120,7 @@ void init_affine_transforms( int size, Eigen::VectorXf &x, const Eigen::Matrix3f
 	}
 }
 
-void EvalLinearSystem( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eigen::VectorXf &x, std::vector<Eigen::Vector3f> &src, std::vector<Eigen::Vector3f> &dst, float &E ) {	
+void EvalRigidTerm( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eigen::VectorXf &x, std::vector<Eigen::Vector3f> &src, std::vector<Eigen::Vector3f> &dst, float &E ) {	
 	// E-rigid
 	float w_rigid = 1.0f;
 	{
@@ -163,17 +162,17 @@ void EvalLinearSystem( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eig
 		}
 	}
 	printf( "E-rigid : %f\n", E );
+}
 
+void EvalSmoothTerm( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eigen::VectorXf &x, std::vector<Eigen::Vector3f> &src, std::vector<Eigen::Vector3f> &dst, float &out_E, const std::vector<std::vector<int>> &links ) {	
 	// E-smooth
+	float E = 0;
 	float w_smooth = 1.0f;
 	{
 		for ( int i = 0; i < size; i++ ) {
-		for ( int j = 0; j < size; j++ ) {
-			if ( i == j ) {
-				continue;
-			}
+		for ( int k = 0; k < links[i].size(); k++ ) {
+			int j = links[i][k];
 
-			
 			Eigen::Vector3f Mi[4], Mj[4];
 			Mi[0] = x.block( i * 12 + 0 * 3, 0, 3, 1 );
 			Mi[1] = x.block( i * 12 + 1 * 3, 0, 3, 1 );
@@ -188,10 +187,6 @@ void EvalLinearSystem( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eig
 			// Ri * ( gj - gi ) - ( gj - gi ) - ( tj - ti )
 
 			Eigen::Vector3f dg = src[j] - src[i];
-
-			if ( dg.norm() > 0.150 ) {
-				continue;
-			}
 
 			Eigen::Vector3f dt = Mj[3] - Mi[3];
 
@@ -211,9 +206,8 @@ void EvalLinearSystem( int size, Eigen::MatrixXf &JtJ, Eigen::VectorXf &Jtr, Eig
 		}}
 	}
 	printf( "E-smooth : %f\n", E );
+	out_E += E;
 }
-
-
 bool read_text_file( const char *path, std::vector<std::vector<Eigen::Vector3f>> &poses ) {
 	FILE *fp = fopen( path, "r" );
 	if ( !fp ) {
@@ -309,7 +303,7 @@ void test_gen_data( void ) {
 		Jtr = Eigen::VectorXf::Zero( 12 * size );
 		E = 0.0f;
 	
-		EvalLinearSystem( size, JtJ, Jtr, x, src, dst, E );
+	//	EvalLinearSystem( size, JtJ, Jtr, x, src, dst, E );
 		//std::cout << Jtr;
 		x -= JtJ.fullPivHouseholderQr().solve( Jtr );
 	}
@@ -341,11 +335,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	// rigid transform
 	
-	Timer timer;
-	
+	Timer timer;	
 	
 	Eigen::Matrix3f out_rot = Eigen::Matrix3f::Identity();
-	Eigen::Vector3f out_t = Eigen::Vector3f::Zero();;
+	Eigen::Vector3f out_t = Eigen::Vector3f::Zero();
 	{
 		timer.Start();
 		float rme = icp_point_to_point_svd( poses[10], poses[600], out_rot, out_t );
@@ -358,7 +351,6 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::cout << "rme : " << rme << std::endl;
 		std::cout << std::endl;
 	}
-	
 
 	int size = poses[0].size();
 
@@ -367,16 +359,30 @@ int _tmain(int argc, _TCHAR* argv[])
 	Eigen::VectorXf x( 12 * size );
 	float E = 0.0f;
 
-	init_affine_transforms( size, x, out_rot, poses[10], poses[600] );
+	init_affine_transforms( size, x, out_rot, poses[0], poses[600] );
+
+	std::vector<std::vector<int>> links( poses[0].size() );
+	for ( int i = 0; i < poses[0].size(); i++ ) {
+		for ( int j = i + 1; j < poses[0].size(); j++ ) {
+			if ( ( poses[0][i] - poses[0][j] ).norm() < 0.25f ) {
+				links[i].push_back( j );
+				links[j].push_back( i );
+			}
+		}
+	}
+
+	for ( int i = 0; i < links.size(); i++ ) {
+		printf( "%d : %d\n", i, links[i].size() );
+	}
 
 	for ( int i = 0; i < 7; i++ ) {
 		JtJ = Eigen::MatrixXf::Identity( 12 * size, 12 * size ) * 1e-3f;
 		Jtr = Eigen::VectorXf::Zero( 12 * size );
 		E = 0.0f;
-	
 
 		timer.Start();
-		EvalLinearSystem( size, JtJ, Jtr, x, poses[10], poses[300], E );
+		EvalRigidTerm( size, JtJ, Jtr, x, poses[0], poses[300], E );
+		EvalSmoothTerm( size, JtJ, Jtr, x, poses[0], poses[300], E, links );
 		timer.Pause();
 		timer.Print( "Jacobian" );
 
