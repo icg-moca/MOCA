@@ -1,0 +1,29 @@
+﻿  main.cpp
+d:\repos\fusion\moca\proj-vive\proj-vive\RenderUtils.h(7): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+d:\repos\fusion\moca\proj-vive\proj-vive\GLobject.h(167): warning C4267: '=' : conversion from 'size_t' to 'GLsizei', possible loss of data
+d:\repos\fusion\moca\proj-vive\proj-vive\GLobject.h(202): warning C4267: '=' : conversion from 'size_t' to 'GLsizei', possible loss of data
+main.cpp(66): warning C4244: 'argument' : conversion from 'double' to 'GLsizei', possible loss of data
+main.cpp(81): warning C4244: 'argument' : conversion from 'double' to 'GLsizei', possible loss of data
+main.cpp(81): warning C4244: 'argument' : conversion from 'double' to 'GLint', possible loss of data
+main.cpp(153): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+main.cpp(153): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+main.cpp(153): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+main.cpp(155): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+main.cpp(155): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+main.cpp(156): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+main.cpp(156): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+main.cpp(165): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+main.cpp(165): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+main.cpp(165): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+main.cpp(167): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+main.cpp(167): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+main.cpp(168): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+main.cpp(168): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
+d:\repos\fusion\moca\proj-vive\proj-vive\GLobject.h(212): warning C4267: '=' : conversion from 'size_t' to 'GLsizei', possible loss of data
+          main.cpp(398) : see reference to function template instantiation 'void GLobject::InitBuffer<glm::vec3>(std::vector<_Ty>,std::vector<_Ty>,std::vector<_Ty>)' being compiled
+          with
+          [
+              _Ty=glm::vec3
+          ]
+  proj-vive.vcxproj -> D:\Repos\Fusion\moca\proj-vive\x64\Debug\proj-vive.exe

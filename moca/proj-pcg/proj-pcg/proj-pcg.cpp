@@ -309,7 +309,7 @@ public :
 };
 
 void TestPCG( void ) {
-	int dim = 12 * 128;
+	int dim = 12 * 100;
 
 	// A : positive definite matrix
 	Eigen::MatrixXf A = Eigen::MatrixXf::Random( dim, dim );

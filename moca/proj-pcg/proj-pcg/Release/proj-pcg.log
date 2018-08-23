@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿Build started 8/22/2018 8:52:01 PM.
      1>Project "C:\Users\admin13302\Documents\GitHub\Fusion\moca\proj-pcg\proj-pcg\proj-pcg.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
@@ -32,3 +33,16 @@
 Build succeeded.
 
 Time Elapsed 00:00:08.14
+=======
+﻿  proj-pcg.cpp
+D:\Repos\Fusion\moca\src\math/matrix.h(28): warning C4244: 'argument' : conversion from 'int' to 'const float', possible loss of data
+D:\Repos\Fusion\moca\src\math/SparseBlockSquareMatrix.h(75): warning C4018: '<' : signed/unsigned mismatch
+D:\Repos\Fusion\moca\src\math/SparseBlockSquareMatrix.h(104): warning C4018: '<' : signed/unsigned mismatch
+D:\Repos\Fusion\moca\src\math/SparseBlockSquareMatrix.h(106): warning C4018: '<' : signed/unsigned mismatch
+D:\Repos\Fusion\moca\src\import.h(4): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
+proj-pcg.cpp(320): warning C4244: 'argument' : conversion from 'int' to 'const float', possible loss of data
+  Generating code
+  Finished generating code
+  proj-pcg.vcxproj -> D:\Repos\Fusion\moca\proj-pcg\Release\proj-pcg.exe
+>>>>>>> 28da171c67a2307fbd6bb4cbbd0b0031cb1c8110
