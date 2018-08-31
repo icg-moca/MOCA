@@ -3,10 +3,20 @@
 *.lo
 *.o
 *.obj
+*.db
+*.db-shm
+*.db-wal
+*.tlog
+*.log
+*.manifest
+*.pdb
+*.lastbuildstate
 
 # Precompiled Headers
 *.gch
 *.pch
+*.ipch
+*.suo
 
 # Compiled Dynamic libraries
 *.so
