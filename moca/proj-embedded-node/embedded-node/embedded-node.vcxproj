@@ -93,8 +93,8 @@
       <AdditionalIncludeDirectories>..\..\dependency\eigen;..\..\dependency\gl;..\..\dependency\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\..\dependency\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;freeglut.lib;libpng16.lib;zlib.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\GLWrappers\Depends\OpenGL\lib\x86_64;..\..\..\Dependency\lib\x64;..\..\dependency\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew64.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -128,8 +128,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\dependency\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;freeglut.lib;libpng16.lib;zlib.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\GLWrappers\Depends\OpenGL\lib\x86_64;..\..\..\Dependency\lib\x64;..\..\dependency\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew64.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MocaDeformationGraph.h" />
+    <ClInclude Include="MocaTopologyFileWriter.h" />
     <ClInclude Include="ModelLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

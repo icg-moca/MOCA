@@ -10,6 +10,7 @@
 *.log
 *.manifest
 *.pdb
+*.opendb
 *.lastbuildstate
 
 # Precompiled Headers
@@ -17,6 +18,9 @@
 *.pch
 *.ipch
 *.suo
+*.tlog
+*.idb
+*.pdb
 
 # Compiled Dynamic libraries
 *.so

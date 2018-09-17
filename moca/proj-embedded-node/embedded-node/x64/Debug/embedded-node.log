@@ -4,20 +4,25 @@ D:\Repos\Fusion\moca\dependency\flann/util/logger.h(66): warning C4996: 'fopen':
           C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
 D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(417): warning C4267: 'argument' : conversion from 'size_t' to 'flann::lsh::FeatureIndex', possible loss of data
 D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(425): warning C4267: 'argument' : conversion from 'size_t' to 'flann::lsh::FeatureIndex', possible loss of data
-d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(17): warning C4267: 'initializing' : conversion from 'size_t' to 'const int', possible loss of data
-d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(104): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(19): warning C4267: 'initializing' : conversion from 'size_t' to 'const int', possible loss of data
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(155): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(234) : see declaration of 'fopen'
-d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(114): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(165): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
-d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(116): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(167): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
-d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(123): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(174): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
-d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(124): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(175): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
-d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(125): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(176): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
           C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
-d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(327): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(188): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(253) : see declaration of 'fscanf'
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(293): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(316): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(350): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(490): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
 D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(260): warning C4267: '=' : conversion from 'size_t' to 'unsigned int', possible loss of data
           D:\Repos\Fusion\moca\dependency\flann/util/lsh_table.h(258) : while compiling class template member function 'void flann::lsh::LshTable<ElementType>::initialize(size_t)'
           with
@@ -46,7 +51,7 @@ D:\Repos\Fusion\moca\dependency\flann/algorithms/nn_index.h(111): warning C4267:
           [
               Distance=flann::L2<float>
           ]
-          d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(203) : see reference to class template instantiation 'flann::Index<Distance>' being compiled
+          d:\repos\fusion\moca\proj-embedded-node\embedded-node\MocaDeformationGraph.h(274) : see reference to class template instantiation 'flann::Index<Distance>' being compiled
           with
           [
               Distance=flann::L2<float>
@@ -480,4 +485,5 @@ D:\Repos\Fusion\moca\dependency\flann/nn/index_testing.h(120): warning C4267: 'a
           [
               Distance=flann::L2<float>
           ]
+  LINK : D:\Repos\Fusion\moca\proj-embedded-node\x64\Debug\embedded-node.exe not found or not built by the last incremental link; performing full link
   embedded-node.vcxproj -> D:\Repos\Fusion\moca\proj-embedded-node\x64\Debug\embedded-node.exe
